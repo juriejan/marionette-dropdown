@@ -22,8 +22,10 @@
   "build-target": "dist/js/marionette-dropdown.js",
   "dependencies": {},
   "devDependencies": {
+    "babel-preset-es2015-rollup": "^1.1.1",
     "bluebird": "^3.1.1",
     "fs-extra": "^0.26.4",
-    "rollup": "^0.25.0"
+    "rollup": "^0.25.0",
+    "rollup-plugin-babel": "^2.3.9"
   }
 }

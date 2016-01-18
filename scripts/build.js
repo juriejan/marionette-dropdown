@@ -1,5 +1,6 @@
 
 const rollup = require('rollup')
+const rollupBabel = require('rollup-plugin-babel')
 
 const Promise = require('bluebird')
 
@@ -11,7 +12,7 @@ const PACKAGE = require('../package.json')
 const TARGET = PACKAGE['build-target']
 
 function packageApplication (entry, dest) {
-  return rollup.rollup({entry})
+  return rollup.rollup({entry, plugins: [rollupBabel()]})
     .then((bundle) => bundle.generate({
       dest,
       format: 'umd',

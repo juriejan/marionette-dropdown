@@ -4,7 +4,7 @@
 	(global.dropdown = factory());
 }(this, function () { 'use strict';
 
-	var index = {}
+	var index = {};
 
 	return index;
 
