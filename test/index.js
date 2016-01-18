@@ -1,14 +1,15 @@
 /* global mocha, describe, it */
 
-import {DropdownView} from 'dropdown'
 import {expect} from 'chai'
-
-import Marionette from 'marionette'
+import {DropdownView, DropdownMixin} from 'dropdown'
 
 describe('Marionette Dropdown', function () {
-  it('works', function () {
+  it('view can be created', function () {
     var view = new DropdownView()
     expect(view).to.exists
+  })
+  it('mixin is exported', function () {
+    expect(DropdownMixin).to.exists
   })
 })
 
