@@ -10,6 +10,7 @@ const rollup = require('rollup')
 const Promise = require('bluebird')
 const SpecReporter = require('mocha/lib/reporters/spec')
 
+const build = require('./build')
 const utils = require('./utils')
 
 const PACKAGE = require('../bower.json')
@@ -64,6 +65,7 @@ function packageTests () {
 
 function test () {
   return Promise.resolve()
+    .then(() => build())
     .then(() => packageTests())
     .then((code) => setup(code))
 }

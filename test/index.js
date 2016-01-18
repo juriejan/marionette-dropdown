@@ -3,9 +3,12 @@
 import {expect} from 'chai'
 import {DropdownView, DropdownMixin} from 'dropdown'
 
+import Backbone from 'backbone'
+
 describe('Marionette Dropdown', function () {
   it('view can be created', function () {
-    var view = new DropdownView()
+    var collection = new Backbone.Collection()
+    var view = new DropdownView({collection})
     expect(view).to.exists
   })
   it('mixin is exported', function () {

@@ -4,7 +4,7 @@ import _ from 'lodash'
 
 import animation from '../animation'
 
-import FocusListView from './views/focusList'
+import FocusListView from '../views/focusList'
 
 export default {
   regions: {
