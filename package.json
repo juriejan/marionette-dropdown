@@ -1,0 +1,23 @@
+{
+  "name": "marionette-dropdown",
+  "version": "0.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Jurie-Jan Botha <juriejanbotha@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juriejan/marionette-dropdown.git"
+  },
+  "bugs": {
+    "url": "https://github.com/juriejan/marionette-dropdown/issues"
+  },
+  "homepage": "https://github.com/juriejan/marionette-dropdown#readme",
+  "engines": {
+    "node": ">=5.4.0",
+    "npm": ">=3.3.12"
+  },
+  "scripts": {},
+  "build-target": "dist/js/marionette-dropdown.js",
+  "dependencies": {},
+  "devDependencies": {}
+}
