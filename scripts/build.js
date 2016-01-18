@@ -10,7 +10,7 @@ const utils = require('./utils')
 
 const fs = Promise.promisifyAll(require('fs-extra'))
 
-const PACKAGE = require('../package.json')
+const PACKAGE = require('../bower.json')
 const TARGET = PACKAGE['build-target']
 const GLOBALS = PACKAGE['global-dependencies']
 

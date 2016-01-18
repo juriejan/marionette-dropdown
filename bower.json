@@ -14,11 +14,15 @@
   ],
   "description": "",
   "build-target": "dist/js/marionette-dropdown.js",
-  "global-dependencies": {},
+  "global-dependencies": {
+    "marionette": "Marionette"
+  },
   "ignore": [
     ".editorconfig",
     ".gitignore"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "backbone.marionette": "~2.4.4"
+  },
   "devDependencies": {}
 }

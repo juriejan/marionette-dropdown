@@ -19,7 +19,6 @@
   "scripts": {
     "build": "node scripts/build.js"
   },
-  "build-target": "dist/js/marionette-dropdown.js",
   "dependencies": {},
   "devDependencies": {
     "babel-preset-es2015-rollup": "^1.1.1",

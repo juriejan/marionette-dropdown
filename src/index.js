@@ -1,2 +1,6 @@
 
-export default {}
+import DropdownView from './view'
+
+export default {
+  DropdownView
+}
