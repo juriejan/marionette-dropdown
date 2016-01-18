@@ -12,7 +12,7 @@ const fs = Promise.promisifyAll(require('fs-extra'))
 
 const PACKAGE = require('../bower.json')
 const TARGET = PACKAGE['build-target']
-const GLOBALS = PACKAGE['global-dependencies']
+const GLOBALS = PACKAGE['global']
 
 function packageApplication (entry, dest, globals) {
   return Promise.resolve()

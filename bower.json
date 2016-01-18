@@ -14,15 +14,24 @@
   ],
   "description": "",
   "build-target": "dist/js/marionette-dropdown.js",
-  "global-dependencies": {
+  "globals": {
     "marionette": "Marionette"
+  },
+  "test-globals": {
+    "mocha": "mocha",
+    "chai": "chai",
+    "dropdown": "dropdown"
   },
   "ignore": [
     ".editorconfig",
     ".gitignore"
   ],
   "dependencies": {
+    "jquery": "~2.2.0",
     "backbone.marionette": "~2.4.4"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "mocha": "~2.3.4",
+    "chai": "~3.4.2"
+  }
 }
