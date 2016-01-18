@@ -13,6 +13,7 @@
     "dist/js/marionette-dropdown.js"
   ],
   "description": "",
+  "build-target": "dist/js/marionette-dropdown.js",
   "ignore": [
     ".editorconfig",
     ".gitignore"
