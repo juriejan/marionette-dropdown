@@ -1,4 +1,6 @@
 
+const _ = require('lodash')
+
 const rollup = require('rollup')
 const rollupBabel = require('rollup-plugin-babel')
 
@@ -10,11 +12,18 @@ const fs = Promise.promisifyAll(require('fs-extra'))
 
 const PACKAGE = require('../package.json')
 const TARGET = PACKAGE['build-target']
+const GLOBALS = PACKAGE['global-dependencies']
 
-function packageApplication (entry, dest) {
-  return rollup.rollup({entry, plugins: [rollupBabel()]})
+function packageApplication (entry, dest, globals) {
+  return Promise.resolve()
+    .then(() => rollup.rollup({
+      entry,
+      external: _.keys(globals),
+      plugins: [rollupBabel()]
+    }))
     .then((bundle) => bundle.generate({
       dest,
+      globals,
       format: 'umd',
       moduleName: 'dropdown'
     }))
@@ -33,7 +42,7 @@ function build () {
   return Promise.resolve()
     .then(() => utils.mkdirs('dist'))
     .then(() => utils.mkdirs('dist/js'))
-    .then(() => packageApplication('src/index.js', TARGET))
+    .then(() => packageApplication('src/index.js', TARGET, GLOBALS))
 }
 
 module.exports = build
