@@ -17,21 +17,21 @@ const PACKAGE = require('../bower.json')
 const TARGET = PACKAGE['build-target']
 const GLOBALS = PACKAGE['globals']
 
-function compileTemplate (srcPath, basePath) {
+function compileTemplate (moduleName, srcPath, basePath) {
   var name = srcPath
-  name = name.replace(`${basePath}/`, '')
+  name = name.replace(`${basePath}/`, `${moduleName}.`)
   name = name.replace('.dust', '')
   return Promise.resolve()
     .then(() => fs.readFileAsync(srcPath))
     .then((data) => dust.compile(data.toString(), name))
 }
 
-function compileTemplates (srcPath, targetPath) {
+function compileTemplates (moduleName, srcPath, targetPath) {
   return Promise.resolve()
     .then(() => glob(`${srcPath}/**/*.dust`, {}))
     .then(function (files) {
       return Promise.all(files.map(function (filePath) {
-        return compileTemplate(filePath, srcPath)
+        return compileTemplate(moduleName, filePath, srcPath)
       }))
     })
     .then((result) => {
@@ -71,7 +71,7 @@ function build () {
     .then(() => lint())
     .then(() => utils.mkdirs('dist'))
     .then(() => utils.mkdirs('dist/js'))
-    .then(() => compileTemplates('templates', 'src/templates.js'))
+    .then(() => compileTemplates('dropdown', 'templates', 'src/templates.js'))
     .then(() => packageApplication('src/index.js', TARGET, GLOBALS))
 }
 
