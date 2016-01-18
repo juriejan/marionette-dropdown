@@ -1,0 +1,6 @@
+<button type="button">
+  <div class="dropdown-text"></div>
+  <i class="icon-expand" />
+</button>
+<input type="hidden"{?name} name="{name}"{/name} />
+<div class="dropdown-list invisible shrinkable"></div>

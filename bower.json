@@ -15,6 +15,7 @@
   "description": "",
   "build-target": "dist/js/marionette-dropdown.js",
   "globals": {
+    "dust": "dust",
     "marionette": "Marionette"
   },
   "test-globals": {
@@ -28,7 +29,8 @@
   ],
   "dependencies": {
     "jquery": "~2.2.0",
-    "backbone.marionette": "~2.4.4"
+    "backbone.marionette": "~2.4.4",
+    "dustjs-linkedin": "~2.7.2"
   },
   "devDependencies": {
     "mocha": "~2.3.4",

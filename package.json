@@ -24,7 +24,9 @@
   "devDependencies": {
     "babel-preset-es2015-rollup": "^1.1.1",
     "bluebird": "^3.1.1",
+    "dustjs-linkedin": "^2.7.2",
     "fs-extra": "^0.26.4",
+    "glob": "^6.0.4",
     "jsdom": "^7.2.2",
     "lodash": "^4.0.0",
     "mocha": "^2.3.4",

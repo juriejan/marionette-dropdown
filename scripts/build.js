@@ -9,10 +9,37 @@ const Promise = require('bluebird')
 const utils = require('./utils')
 
 const fs = Promise.promisifyAll(require('fs-extra'))
+const dust = Promise.promisifyAll(require('dustjs-linkedin'))
+const glob = Promise.promisify(require('glob'))
 
 const PACKAGE = require('../bower.json')
 const TARGET = PACKAGE['build-target']
-const GLOBALS = PACKAGE['global']
+const GLOBALS = PACKAGE['globals']
+
+function compileTemplate (srcPath, basePath) {
+  var name = srcPath
+  name = name.replace(`${basePath}/`, '')
+  name = name.replace('.dust', '')
+  return Promise.resolve()
+    .then(() => fs.readFileAsync(srcPath))
+    .then((data) => dust.compile(data.toString(), name))
+}
+
+function compileTemplates (srcPath, targetPath) {
+  return Promise.resolve()
+    .then(() => glob(`${srcPath}/**/*.dust`, {}))
+    .then(function (files) {
+      return Promise.all(files.map(function (filePath) {
+        return compileTemplate(filePath, srcPath)
+      }))
+    })
+    .then((result) => {
+      result = result.join('')
+      result = `import dust from 'dust'\n\n` + result
+      return fs.writeFileAsync(targetPath, result)
+    })
+    .then(() => utils.log(`Compiled templates at '${srcPath}'`))
+}
 
 function packageApplication (entry, dest, globals) {
   return Promise.resolve()
@@ -42,6 +69,7 @@ function build () {
   return Promise.resolve()
     .then(() => utils.mkdirs('dist'))
     .then(() => utils.mkdirs('dist/js'))
+    .then(() => compileTemplates('templates', 'src/templates.js'))
     .then(() => packageApplication('src/index.js', TARGET, GLOBALS))
 }
 
