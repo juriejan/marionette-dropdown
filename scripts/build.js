@@ -7,6 +7,7 @@ const rollupBabel = require('rollup-plugin-babel')
 const Promise = require('bluebird')
 
 const utils = require('./utils')
+const lint = require('./lint')
 
 const fs = Promise.promisifyAll(require('fs-extra'))
 const dust = Promise.promisifyAll(require('dustjs-linkedin'))
@@ -67,6 +68,7 @@ function packageApplication (entry, dest, globals) {
 
 function build () {
   return Promise.resolve()
+    .then(() => lint())
     .then(() => utils.mkdirs('dist'))
     .then(() => utils.mkdirs('dist/js'))
     .then(() => compileTemplates('templates', 'src/templates.js'))
