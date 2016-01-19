@@ -1,12 +1,14 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('lodash'), require('marionette'), require('jquery'), require('dust')) :
-  typeof define === 'function' && define.amd ? define(['lodash', 'marionette', 'jquery', 'dust'], factory) :
-  (global.dropdown = factory(global._,global.Marionette,global.$,global.dust));
-}(this, function (_,Marionette,$,dust) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('lodash'), require('marionette'), require('jquery'), require('backbone'), require('cocktail'), require('dust')) :
+  typeof define === 'function' && define.amd ? define(['lodash', 'marionette', 'jquery', 'backbone', 'cocktail', 'dust'], factory) :
+  (global.dropdown = factory(global._,global.Marionette,global.$,global.Backbone,global.Cocktail,global.dust));
+}(this, function (_,Marionette,$,Backbone,Cocktail,dust) { 'use strict';
 
   _ = 'default' in _ ? _['default'] : _;
   Marionette = 'default' in Marionette ? Marionette['default'] : Marionette;
   $ = 'default' in $ ? $['default'] : $;
+  Backbone = 'default' in Backbone ? Backbone['default'] : Backbone;
+  Cocktail = 'default' in Cocktail ? Cocktail['default'] : Cocktail;
   dust = 'default' in dust ? dust['default'] : dust;
 
   var ItemView = Marionette.ItemView.extend({
@@ -723,6 +725,24 @@
       this.list.render();
       this.refresh();
     }
+  });
+
+  var originalExtend = Backbone.Model.extend;
+
+  var extend = function extend(protoProps, classProps) {
+    var klass = originalExtend.call(this, protoProps, classProps);
+    var mixins = klass.prototype.mixins;
+    if (mixins && klass.prototype.hasOwnProperty('mixins')) {
+      Cocktail.mixin(klass, mixins);
+    }
+    return klass;
+  };
+
+  _.each([Backbone.Model, Backbone.Collection, Backbone.Router, Backbone.View, Marionette.ItemView, Marionette.CollectionView, Marionette.CompositeView, Marionette.LayoutView], function (klass) {
+    klass.mixin = function mixin() {
+      Cocktail.mixin(this, _.toArray(arguments));
+    };
+    klass.extend = extend;
   });
 
   (function (dust) {
