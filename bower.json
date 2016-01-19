@@ -41,7 +41,8 @@
     "lodash": "~3.10.0",
     "velocity": "~1.2.3",
     "backbone": "~1.2.3",
-    "cocktail": "~0.5.11"
+    "cocktail": "~0.5.11",
+    "nanoscroller": "juriejan/nanoScrollerJS#sherpa-master"
   },
   "devDependencies": {
     "mocha": "~2.3.4",

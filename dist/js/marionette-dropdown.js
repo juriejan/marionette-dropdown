@@ -1,19 +1,53 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('lodash'), require('marionette'), require('jquery'), require('backbone'), require('cocktail'), require('dust')) :
-  typeof define === 'function' && define.amd ? define(['lodash', 'marionette', 'jquery', 'backbone', 'cocktail', 'dust'], factory) :
-  (global.dropdown = factory(global._,global.Marionette,global.$,global.Backbone,global.Cocktail,global.dust));
-}(this, function (_,Marionette,$,Backbone,Cocktail,dust) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('lodash'), require('backbone'), require('marionette'), require('cocktail'), require('dust'), require('jquery')) :
+  typeof define === 'function' && define.amd ? define(['lodash', 'backbone', 'marionette', 'cocktail', 'dust', 'jquery'], factory) :
+  (global.dropdown = factory(global._,global.Backbone,global.Marionette,global.Cocktail,global.dust,global.$));
+}(this, function (_,Backbone,Marionette,Cocktail,dust,$) { 'use strict';
 
   _ = 'default' in _ ? _['default'] : _;
-  Marionette = 'default' in Marionette ? Marionette['default'] : Marionette;
-  $ = 'default' in $ ? $['default'] : $;
   Backbone = 'default' in Backbone ? Backbone['default'] : Backbone;
+  Marionette = 'default' in Marionette ? Marionette['default'] : Marionette;
   Cocktail = 'default' in Cocktail ? Cocktail['default'] : Cocktail;
   dust = 'default' in dust ? dust['default'] : dust;
+  $ = 'default' in $ ? $['default'] : $;
+
+  var originalExtend = Backbone.Model.extend;
+
+  var extend = function extend(protoProps, classProps) {
+    var klass = originalExtend.call(this, protoProps, classProps);
+    var mixins = klass.prototype.mixins;
+    if (mixins && klass.prototype.hasOwnProperty('mixins')) {
+      Cocktail.mixin(klass, mixins);
+    }
+    return klass;
+  };
+
+  _.each([Backbone.Model, Backbone.Collection, Backbone.Router, Backbone.View, Marionette.ItemView, Marionette.CollectionView, Marionette.CompositeView, Marionette.LayoutView], function (klass) {
+    klass.mixin = function mixin() {
+      Cocktail.mixin(this, _.toArray(arguments));
+    };
+    klass.extend = extend;
+  });
+
+  (function (dust) {
+    dust.register("dropdown.dropdown", body_0);function body_0(chk, ctx) {
+      return chk.w("<button type=\"button\"><div class=\"dropdown-text\"></div><i class=\"icon-expand\" /></button><input type=\"hidden\"").x(ctx.get(["name"], false), ctx, { "block": body_1 }, {}).w(" /><div class=\"dropdown-list invisible shrinkable\"></div>");
+    }body_0.__dustBody = !0;function body_1(chk, ctx) {
+      return chk.w(" name=\"").f(ctx.get(["name"], false), ctx, "h").w("\"");
+    }body_1.__dustBody = !0;return body_0;
+  })(dust);(function (dust) {
+    dust.register("dropdown.focusList", body_0);function body_0(chk, ctx) {
+      return chk.w("<div class=\"nano\"><div class=\"nano-content\"><ul></ul></div></div>");
+    }body_0.__dustBody = !0;return body_0;
+  })(dust);(function (dust) {
+    dust.register("dropdown.item", body_0);function body_0(chk, ctx) {
+      return chk.f(ctx.get(["text"], false), ctx, "h");
+    }body_0.__dustBody = !0;return body_0;
+  })(dust);
 
   var ItemView = Marionette.ItemView.extend({
     tagName: 'li',
-    template: '{{text}}',
+    template: 'dropdown.item',
     events: {
       mouseover: 'onMouseOver'
     },
@@ -726,36 +760,6 @@
       this.refresh();
     }
   });
-
-  var originalExtend = Backbone.Model.extend;
-
-  var extend = function extend(protoProps, classProps) {
-    var klass = originalExtend.call(this, protoProps, classProps);
-    var mixins = klass.prototype.mixins;
-    if (mixins && klass.prototype.hasOwnProperty('mixins')) {
-      Cocktail.mixin(klass, mixins);
-    }
-    return klass;
-  };
-
-  _.each([Backbone.Model, Backbone.Collection, Backbone.Router, Backbone.View, Marionette.ItemView, Marionette.CollectionView, Marionette.CompositeView, Marionette.LayoutView], function (klass) {
-    klass.mixin = function mixin() {
-      Cocktail.mixin(this, _.toArray(arguments));
-    };
-    klass.extend = extend;
-  });
-
-  (function (dust) {
-    dust.register("dropdown.dropdown", body_0);function body_0(chk, ctx) {
-      return chk.w("<button type=\"button\"><div class=\"dropdown-text\"></div><i class=\"icon-expand\" /></button><input type=\"hidden\"").x(ctx.get(["name"], false), ctx, { "block": body_1 }, {}).w(" /><div class=\"dropdown-list invisible shrinkable\"></div>");
-    }body_0.__dustBody = !0;function body_1(chk, ctx) {
-      return chk.w(" name=\"").f(ctx.get(["name"], false), ctx, "h").w("\"");
-    }body_1.__dustBody = !0;return body_0;
-  })(dust);(function (dust) {
-    dust.register("dropdown.focusList", body_0);function body_0(chk, ctx) {
-      return chk.w("<div class=\"nano\"><div class=\"nano-content\"><ul></ul></div></div>");
-    }body_0.__dustBody = !0;return body_0;
-  })(dust);
 
   var index = {
     DropdownView: DropdownView,
