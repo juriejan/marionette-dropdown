@@ -442,11 +442,10 @@
       }
     },
     onRender: function onRender() {
-      this.list = new FocusListView({
+      this.list = new this.focusListView({
         maxSize: this.maxSize,
         childView: this.dropdownItemView,
-        collection: this.collection,
-        attributes: { class: 'dropdownList focusList' }
+        collection: this.collection
       });
       this.listenTo(this.list, 'select', this.onItemSelect);
       if (this.expanded) {
@@ -629,9 +628,14 @@
     loadingEvents: loadingEvents
   };
 
+  var DropdownFocusListView = FocusListView.extend({
+    attributes: { class: 'dropdownList focusList' }
+  });
+
   var DropdownView = Marionette.LayoutView.extend({
     mixins: [DropdownMixin],
     template: 'dropdown.dropdown',
+    focusListView: DropdownFocusListView,
     dropdownItemView: ItemView,
     attributes: {
       class: 'dropdown'
@@ -763,7 +767,8 @@
 
   var index = {
     DropdownView: DropdownView,
-    DropdownMixin: DropdownMixin
+    DropdownMixin: DropdownMixin,
+    FocusListView: FocusListView
   };
 
   return index;

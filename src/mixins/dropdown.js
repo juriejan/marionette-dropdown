@@ -4,8 +4,6 @@ import _ from 'lodash'
 
 import animation from '../animation'
 
-import FocusListView from '../views/focusList'
-
 export default {
   regions: {
     list: 'div.dropdown-list'
@@ -30,11 +28,10 @@ export default {
     }
   },
   onRender: function () {
-    this.list = new FocusListView({
+    this.list = new this.focusListView({
       maxSize: this.maxSize,
       childView: this.dropdownItemView,
-      collection: this.collection,
-      attributes: {class: 'dropdownList focusList'}
+      collection: this.collection
     })
     this.listenTo(this.list, 'select', this.onItemSelect)
     if (this.expanded) { this.list.$el.css({opacity: 1}) }

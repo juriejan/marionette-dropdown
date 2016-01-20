@@ -4,13 +4,19 @@ import _ from 'lodash'
 import Marionette from 'marionette'
 
 import ItemView from './item'
+import FocusListView from './focusList'
 import DropdownMixin from '../mixins/dropdown'
 
 import utils from '../utils'
 
+const DropdownFocusListView = FocusListView.extend({
+  attributes: {class: 'dropdownList focusList'}
+})
+
 export default Marionette.LayoutView.extend({
   mixins: [DropdownMixin],
   template: 'dropdown.dropdown',
+  focusListView: DropdownFocusListView,
   dropdownItemView: ItemView,
   attributes: {
     class: 'dropdown'
