@@ -109,10 +109,6 @@ export default Marionette.CompositeView.extend({
       var itemHeight = firstItem.outerHeight()
       height = _.min([el.height(), (itemHeight * this.maxSize)])
     }
-    // Add the top and bottom border widths
-    var topWidth = parseInt(this.$el.css('border-top-width'), 10)
-    var bottomWidth = parseInt(this.$el.css('border-top-width'), 10)
-    height += (topWidth + bottomWidth)
     // Return the calculated height
     return height
   },

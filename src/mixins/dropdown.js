@@ -102,10 +102,10 @@ export default {
       var listEl = this.list.$el
       // Apply parent styles
       listEl.css(this.$el.css(['font-size', 'line-height']))
-      // Move the list element to the page body
-      listEl.appendTo($('body'))
       // Determine the height of the list
       this.listHeight = this.list.getListHeight()
+      // Move the list element to the page body
+      listEl.appendTo($('body'))
       // Set the list width
       if (this.preserveListWidth) {
         this.listWidth = this.list.getListWidth()
