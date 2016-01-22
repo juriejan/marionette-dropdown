@@ -2,7 +2,7 @@
 import $ from 'jquery'
 import _ from 'lodash'
 
-import animation from '../animation'
+import animation from 'animation'
 
 export default {
   regions: {
