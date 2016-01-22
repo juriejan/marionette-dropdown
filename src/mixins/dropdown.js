@@ -104,14 +104,14 @@ export default {
       listEl.css(this.$el.css(['font-size', 'line-height']))
       // Determine the height of the list
       this.listHeight = this.list.getListHeight()
-      // Move the list element to the page body
-      listEl.appendTo($('body'))
       // Set the list width
       if (this.preserveListWidth) {
         this.listWidth = this.list.getListWidth()
       } else {
         this.listWidth = this.$el.outerWidth()
       }
+      // Move the list element to the page body
+      listEl.appendTo($('body'))
       // Apply list width
       listEl.outerWidth(this.listWidth)
       // Decide which way to expand the list

@@ -402,10 +402,6 @@
         var itemHeight = firstItem.outerHeight();
         height = _.min([el.height(), itemHeight * this.maxSize]);
       }
-      // Add the top and bottom border widths
-      // var topWidth = parseInt(this.$el.css('border-top-width'), 10)
-      // var bottomWidth = parseInt(this.$el.css('border-top-width'), 10)
-      // height += (topWidth + bottomWidth)
       // Return the calculated height
       return height;
     },
@@ -520,14 +516,14 @@
         listEl.css(this.$el.css(['font-size', 'line-height']));
         // Determine the height of the list
         this.listHeight = this.list.getListHeight();
-        // Move the list element to the page body
-        listEl.appendTo($('body'));
         // Set the list width
         if (this.preserveListWidth) {
           this.listWidth = this.list.getListWidth();
         } else {
           this.listWidth = this.$el.outerWidth();
         }
+        // Move the list element to the page body
+        listEl.appendTo($('body'));
         // Apply list width
         listEl.outerWidth(this.listWidth);
         // Decide which way to expand the list
