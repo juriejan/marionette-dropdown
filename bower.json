@@ -16,7 +16,7 @@
   "build-target": "dist/js/marionette-dropdown.js",
   "globals": {
     "animation": "animation",
-    "dust": "dust",
+    "handlebars": "Handlebars",
     "cocktail": "Cocktail",
     "backbone": "Backbone",
     "marionette": "Marionette",
@@ -42,12 +42,12 @@
   "dependencies": {
     "jquery": "~2.2.0",
     "backbone.marionette": "~2.4.4",
-    "dustjs-linkedin": "~2.7.2",
     "lodash": "~3.10.0",
     "backbone": "~1.2.3",
     "cocktail": "~0.5.11",
     "nanoscroller": "juriejan/nanoScrollerJS#sherpa-master",
-    "animation": "juriejan/animation"
+    "animation": "juriejan/animation",
+    "handlebars": "~4.0.5"
   },
   "devDependencies": {
     "mocha": "~2.3.4",

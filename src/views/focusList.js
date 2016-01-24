@@ -4,8 +4,10 @@ import _ from 'lodash'
 import animation from 'animation'
 import Marionette from 'marionette'
 
+import templates from '../templates'
+
 export default Marionette.CompositeView.extend({
-  template: 'dropdown.focusList',
+  template: templates['focusList'],
   attributes: {
     class: 'focusList'
   },

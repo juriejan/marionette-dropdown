@@ -1,8 +1,11 @@
 
+const path = require('path')
+
 const _ = require('lodash')
 
 const rollup = require('rollup')
 const rollupBabel = require('rollup-plugin-babel')
+const handlebars = require('handlebars')
 
 const Promise = require('bluebird')
 
@@ -10,36 +13,29 @@ const utils = require('./utils')
 const lint = require('./lint')
 
 const fs = Promise.promisifyAll(require('fs-extra'))
-const dust = Promise.promisifyAll(require('dustjs-linkedin'))
 const glob = Promise.promisify(require('glob'))
 
 const PACKAGE = require('../bower.json')
 const TARGET = PACKAGE['build-target']
 const GLOBALS = PACKAGE['globals']
 
-function compileTemplate (moduleName, srcPath, basePath) {
-  var name = srcPath
-  name = name.replace(`${basePath}/`, `${moduleName}.`)
-  name = name.replace('.dust', '')
+function compileTemplates (basePath, dest) {
   return Promise.resolve()
-    .then(() => fs.readFileAsync(srcPath))
-    .then((data) => dust.compile(data.toString(), name))
-}
-
-function compileTemplates (moduleName, srcPath, targetPath) {
-  return Promise.resolve()
-    .then(() => glob(`${srcPath}/**/*.dust`, {}))
-    .then(function (files) {
-      return Promise.all(files.map(function (filePath) {
-        return compileTemplate(moduleName, filePath, srcPath)
-      }))
+    .then(() => fs.writeFile(
+      dest, `import handlebars from 'handlebars'\n\nexport default {\n`
+    ))
+    .then(() => glob(`${basePath}/**/*.hbs`))
+    .each((src) => {
+      var name = path.basename(src).replace('.hbs', '')
+      return Promise.resolve()
+        .then(() => fs.readFileAsync(src))
+        .then((data) => handlebars.precompile(data.toString()))
+        .then((spec) => fs.appendFileAsync(
+          dest, `'${name}': handlebars.template(${spec}),\n`
+        ))
     })
-    .then((result) => {
-      result = result.join('')
-      result = `import dust from 'dust'\n\n` + result
-      return fs.writeFileAsync(targetPath, result)
-    })
-    .then(() => utils.log(`Compiled templates at '${srcPath}'`))
+    .then(() => fs.appendFileAsync(dest, `}\n`))
+    .then(() => utils.log(`Compiled templates in '${basePath}' to '${dest}'`))
 }
 
 function packageApplication (entry, dest, globals) {
@@ -71,7 +67,7 @@ function build () {
     .then(() => lint())
     .then(() => utils.mkdirs('dist'))
     .then(() => utils.mkdirs('dist/js'))
-    .then(() => compileTemplates('dropdown', 'templates', 'src/templates.js'))
+    .then(() => compileTemplates('templates', 'src/templates.js'))
     .then(() => packageApplication('src/index.js', TARGET, GLOBALS))
 }
 

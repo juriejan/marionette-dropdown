@@ -3,7 +3,7 @@ import Marionette from 'marionette'
 
 export default Marionette.ItemView.extend({
   tagName: 'li',
-  template: 'dropdown.item',
+  template: '{{text}}',
   events: {
     mouseover: 'onMouseOver'
   },

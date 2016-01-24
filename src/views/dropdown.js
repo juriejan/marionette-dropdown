@@ -8,6 +8,7 @@ import FocusListView from './focusList'
 import DropdownMixin from '../mixins/dropdown'
 
 import utils from '../utils'
+import templates from '../templates'
 
 const DropdownFocusListView = FocusListView.extend({
   attributes: {class: 'dropdownList focusList'}
@@ -15,7 +16,7 @@ const DropdownFocusListView = FocusListView.extend({
 
 export default Marionette.LayoutView.extend({
   mixins: [DropdownMixin],
-  template: 'dropdown.dropdown',
+  template: templates['dropdown'],
   focusListView: DropdownFocusListView,
   dropdownItemView: ItemView,
   attributes: {
