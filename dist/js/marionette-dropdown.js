@@ -414,4 +414,4 @@
     return index;
 
 }));
-//# sourceMappingURL=dist/js/marionette-dropdown.js.map
+//# sourceMappingURL=marionette-dropdown.js.map

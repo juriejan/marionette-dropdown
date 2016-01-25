@@ -52,10 +52,11 @@ function packageApplication (entry, dest, globals) {
       moduleName: 'dropdown'
     }))
     .then((result) => {
-      var mapFileName = `${TARGET}.map`
+      var destFileName = path.basename(dest)
+      var mapFileName = `${destFileName}.map`
       var code = result.code + `\n//# sourceMappingURL=${mapFileName}`
       return Promise.all([
-        fs.writeFileAsync(TARGET, code),
+        fs.writeFileAsync(dest, code),
         fs.writeFileAsync(mapFileName, result.map)
       ])
     })
