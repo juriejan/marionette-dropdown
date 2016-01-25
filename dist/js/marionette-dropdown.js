@@ -1,16 +1,16 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('lodash'), require('backbone'), require('marionette'), require('cocktail'), require('handlebars'), require('focuslist'), require('jquery'), require('animation')) :
-    typeof define === 'function' && define.amd ? define(['lodash', 'backbone', 'marionette', 'cocktail', 'handlebars', 'focuslist', 'jquery', 'animation'], factory) :
-    (global.dropdown = factory(global._,global.Backbone,global.Marionette,global.Cocktail,global.Handlebars,global.focuslist,global.$,global.animation));
-}(this, function (_,Backbone,Marionette,Cocktail,handlebars,focuslist,$,animation) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('lodash'), require('backbone'), require('marionette'), require('cocktail'), require('focuslist'), require('jquery'), require('animation'), require('handlebars')) :
+    typeof define === 'function' && define.amd ? define(['lodash', 'backbone', 'marionette', 'cocktail', 'focuslist', 'jquery', 'animation', 'handlebars'], factory) :
+    (global.dropdown = factory(global._,global.Backbone,global.Marionette,global.Cocktail,global.focuslist,global.$,global.animation,global.Handlebars));
+}(this, function (_,Backbone,Marionette,Cocktail,focuslist,$,animation,handlebars) { 'use strict';
 
     _ = 'default' in _ ? _['default'] : _;
     Backbone = 'default' in Backbone ? Backbone['default'] : Backbone;
     Marionette = 'default' in Marionette ? Marionette['default'] : Marionette;
     Cocktail = 'default' in Cocktail ? Cocktail['default'] : Cocktail;
-    handlebars = 'default' in handlebars ? handlebars['default'] : handlebars;
     $ = 'default' in $ ? $['default'] : $;
     animation = 'default' in animation ? animation['default'] : animation;
+    handlebars = 'default' in handlebars ? handlebars['default'] : handlebars;
 
     var originalExtend = Backbone.Model.extend;
 
@@ -30,21 +30,11 @@
       klass.extend = extend;
     });
 
-    var templates = {
-        'dropdown': handlebars.template({ "1": function _(container, depth0, helpers, partials, data) {
-                var helper;
-
-                return " name=\"" + container.escapeExpression((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helpers.helperMissing, typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {}, { "name": "name", "hash": {}, "data": data }) : helper)) + "\"";
-            }, "compiler": [7, ">= 4.0.0"], "main": function main(container, depth0, helpers, partials, data) {
-                var stack1;
-
-                return "<button type=\"button\">\n  <div class=\"dropdown-text\"></div>\n  <i class=\"icon-expand\" />\n</button>\n<input type=\"hidden\"" + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {}, depth0 != null ? depth0.name : depth0, { "name": "if", "hash": {}, "fn": container.program(1, data, 0), "inverse": container.noop, "data": data })) != null ? stack1 : "") + " />\n<div class=\"dropdown-list invisible shrinkable\"></div>\n";
-            }, "useData": true })
-    };
-
     var ItemView = Marionette.ItemView.extend({
       tagName: 'li',
-      template: '{{text}}',
+      template: function template(data) {
+        return data.text;
+      },
       events: {
         mouseover: 'onMouseOver'
       },
@@ -267,6 +257,18 @@
       defined: defined,
       loadingActions: loadingActions,
       loadingEvents: loadingEvents
+    };
+
+    var templates = {
+        'dropdown': handlebars.template({ "1": function _(container, depth0, helpers, partials, data) {
+                var helper;
+
+                return " name=\"" + container.escapeExpression((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helpers.helperMissing, typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {}, { "name": "name", "hash": {}, "data": data }) : helper)) + "\"";
+            }, "compiler": [7, ">= 4.0.0"], "main": function main(container, depth0, helpers, partials, data) {
+                var stack1;
+
+                return "<button type=\"button\">\n  <div class=\"dropdown-text\"></div>\n  <i class=\"icon-expand\" />\n</button>\n<input type=\"hidden\"" + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {}, depth0 != null ? depth0.name : depth0, { "name": "if", "hash": {}, "fn": container.program(1, data, 0), "inverse": container.noop, "data": data })) != null ? stack1 : "") + " />\n<div class=\"dropdown-list invisible shrinkable\"></div>\n";
+            }, "useData": true })
     };
 
     var DropdownFocusListView = focuslist.FocusListView.extend({
