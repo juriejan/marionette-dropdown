@@ -45,7 +45,7 @@ function packageApplication (entry, dest, globals, moduleName) {
       entry, external: _.keys(globals), plugins: [rollupBabel()]
     }))
     .then((bundle) => bundle.generate({
-      dest, globals, moduleName, format: 'umd'
+      dest, globals, moduleName, format: 'umd', sourceMap: true
     }))
     .then((result) => {
       var mapFileName = `${path.basename(dest)}.map`
