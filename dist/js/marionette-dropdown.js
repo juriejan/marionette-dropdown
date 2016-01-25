@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('lodash'), require('backbone'), require('marionette'), require('cocktail'), require('handlebars'), require('jquery'), require('animation')) :
-    typeof define === 'function' && define.amd ? define(['lodash', 'backbone', 'marionette', 'cocktail', 'handlebars', 'jquery', 'animation'], factory) :
-    (global.dropdown = factory(global._,global.Backbone,global.Marionette,global.Cocktail,global.Handlebars,global.$,global.animation));
-}(this, function (_,Backbone,Marionette,Cocktail,handlebars,$,animation) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('lodash'), require('backbone'), require('marionette'), require('cocktail'), require('handlebars'), require('focuslist'), require('jquery'), require('animation')) :
+    typeof define === 'function' && define.amd ? define(['lodash', 'backbone', 'marionette', 'cocktail', 'handlebars', 'focuslist', 'jquery', 'animation'], factory) :
+    (global.dropdown = factory(global._,global.Backbone,global.Marionette,global.Cocktail,global.Handlebars,global.focuslist,global.$,global.animation));
+}(this, function (_,Backbone,Marionette,Cocktail,handlebars,focuslist,$,animation) { 'use strict';
 
     _ = 'default' in _ ? _['default'] : _;
     Backbone = 'default' in Backbone ? Backbone['default'] : Backbone;
@@ -39,9 +39,6 @@
                 var stack1;
 
                 return "<button type=\"button\">\n  <div class=\"dropdown-text\"></div>\n  <i class=\"icon-expand\" />\n</button>\n<input type=\"hidden\"" + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {}, depth0 != null ? depth0.name : depth0, { "name": "if", "hash": {}, "fn": container.program(1, data, 0), "inverse": container.noop, "data": data })) != null ? stack1 : "") + " />\n<div class=\"dropdown-list invisible shrinkable\"></div>\n";
-            }, "useData": true }),
-        'focusList': handlebars.template({ "compiler": [7, ">= 4.0.0"], "main": function main(container, depth0, helpers, partials, data) {
-                return "<div class=\"nano\">\n  <div class=\"nano-content\">\n    <ul></ul>\n  </div>\n</div>\n";
             }, "useData": true })
     };
 
@@ -59,122 +56,6 @@
       },
       attributes: function attributes() {
         return { 'data-value': this.model.id };
-      }
-    });
-
-    var FocusListView = Marionette.CompositeView.extend({
-      template: templates['focusList'],
-      attributes: {
-        class: 'focusList'
-      },
-      events: {
-        'keydown': 'onKeyDown'
-      },
-      childViewContainer: 'ul',
-      childEvents: {
-        focus: 'onChildFocus',
-        select: 'onChildSelect'
-      },
-      ui: {
-        scroll: '.nano',
-        content: '.nano-content',
-        list: 'ul'
-      },
-      keyEvents: {
-        13: 'itemSelect',
-        32: 'itemSelect',
-        38: 'onArrowUpKey',
-        40: 'onArrowDownKey'
-      },
-      initialize: function initialize(options) {
-        this.maxSize = options.maxSize;
-      },
-      onShow: function onShow() {
-        this.refreshScroll();
-      },
-      onChildFocus: function onChildFocus(child) {
-        if (child.$el.is(':not(.disabled)')) {
-          this.ui.list.children().removeClass('focus');
-          child.$el.addClass('focus');
-        }
-      },
-      onChildSelect: function onChildSelect(child) {
-        this.trigger('select', child);
-      },
-      onKeyDown: function onKeyDown(e) {
-        var method = this.keyEvents[e.keyCode];
-        if (method !== undefined) {
-          this[method]();
-          e.preventDefault();
-        }
-      },
-      onArrowUpKey: function onArrowUpKey() {
-        var focusedView = this.findFocusedItem();
-        if (focusedView === undefined) {
-          this.ui.list.children().last().addClass('focus');
-        } else {
-          var items = this.ui.list.children(':not(.disabled)');
-          var index = items.index(focusedView.el);
-          index = index - 1;
-          index = index < 0 ? items.length - 1 : index;
-          this.focusItem(items, index);
-        }
-      },
-      onArrowDownKey: function onArrowDownKey() {
-        var focusedView = this.findFocusedItem();
-        if (focusedView === undefined) {
-          this.ui.list.children().first().addClass('focus');
-        } else {
-          var items = this.ui.list.children(':not(.disabled)');
-          var index = items.index(focusedView.el);
-          index = index + 1;
-          index = index > items.length - 1 ? 0 : index;
-          this.focusItem(items, index);
-        }
-      },
-      focusItem: function focusItem(items, index) {
-        var item = items.eq(index);
-        items.removeClass('focus');
-        item.addClass('focus');
-        animation.scroll(item, this.ui.content);
-      },
-      filter: function filter(child) {
-        return !(child.get('visible') === false);
-      },
-      itemSelect: function itemSelect(e) {
-        var focusedView = this.findFocusedItem();
-        this.ui.list.children().removeClass('focus');
-        if (focusedView !== undefined) {
-          this.trigger('select', focusedView);
-        }
-      },
-      findFocusedItem: function findFocusedItem() {
-        return this.children.find(function (child) {
-          return child.$el.hasClass('focus');
-        });
-      },
-      refreshScroll: function refreshScroll() {
-        this.ui.scroll.nanoScroller({ alwaysVisible: true });
-      },
-      getListHeight: function getListHeight() {
-        var el = this.ui.list;
-        var height = el.height();
-        el.css('height', '');
-        // Calculate the height according to the maximum size
-        if (this.maxSize) {
-          var firstItem = el.find('li').eq(0);
-          var itemHeight = firstItem.outerHeight();
-          height = _.min([el.height(), itemHeight * this.maxSize]);
-        }
-        // Return the calculated height
-        return height;
-      },
-      getListWidth: function getListWidth() {
-        var width = null;
-        this.ui.content.css({ position: 'relative' });
-        width = this.$el.outerWidth();
-        this.ui.content.css({ position: 'absolute' });
-        return width;
       }
     });
 
@@ -388,7 +269,7 @@
       loadingEvents: loadingEvents
     };
 
-    var DropdownFocusListView = FocusListView.extend({
+    var DropdownFocusListView = focuslist.FocusListView.extend({
       attributes: { class: 'dropdownList focusList' }
     });
 
@@ -527,8 +408,7 @@
 
     var index = {
       DropdownView: DropdownView,
-      DropdownMixin: DropdownMixin,
-      FocusListView: FocusListView
+      DropdownMixin: DropdownMixin
     };
 
     return index;

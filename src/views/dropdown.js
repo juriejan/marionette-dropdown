@@ -2,9 +2,9 @@
 import _ from 'lodash'
 
 import Marionette from 'marionette'
+import {FocusListView} from 'focuslist'
 
 import ItemView from './item'
-import FocusListView from './focusList'
 import DropdownMixin from '../mixins/dropdown'
 
 import utils from '../utils'

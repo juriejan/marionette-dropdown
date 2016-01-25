@@ -12,6 +12,7 @@ function mkdirs (dirname) {
     log(`Created ${dirname} directory`)
   })
 }
+
 module.exports = {
   handleError,
   log,
