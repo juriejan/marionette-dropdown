@@ -25,11 +25,11 @@ function compileTemplates (basePath, dest) {
     .then(() => fs.writeFile(
       dest, `import handlebars from 'handlebars'\n\nexport default {\n`
     ))
-    .then(() => glob(`${basePath}/**/*.hbs`))
-    .each((src) => {
-      var name = path.basename(src).replace('.hbs', '')
+    .then(() => glob(`**/*.hbs`, {cwd: basePath}))
+    .each((fileName) => {
+      var name = fileName.replace('.hbs', '')
       return Promise.resolve()
-        .then(() => fs.readFileAsync(src))
+        .then(() => fs.readFileAsync(`${basePath}/${fileName}`))
         .then((data) => handlebars.precompile(data.toString()))
         .then((spec) => fs.appendFileAsync(
           dest, `'${name}': handlebars.template(${spec}),\n`
