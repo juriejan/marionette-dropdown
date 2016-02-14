@@ -267,7 +267,7 @@
             }, "compiler": [7, ">= 4.0.0"], "main": function main(container, depth0, helpers, partials, data) {
                 var stack1;
 
-                return "<button type=\"button\">\n  <div class=\"dropdown-text\"></div>\n  <i class=\"icon-expand\" />\n</button>\n<input type=\"hidden\"" + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {}, depth0 != null ? depth0.name : depth0, { "name": "if", "hash": {}, "fn": container.program(1, data, 0), "inverse": container.noop, "data": data })) != null ? stack1 : "") + " />\n<div class=\"dropdown-list invisible shrinkable\"></div>\n";
+                return "<div class=\"dropdown-button\">\n  <div class=\"button-text\"></div>\n  <i class=\"icon-expand\" />\n</div>\n<input type=\"hidden\"" + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {}, depth0 != null ? depth0.name : depth0, { "name": "if", "hash": {}, "fn": container.program(1, data, 0), "inverse": container.noop, "data": data })) != null ? stack1 : "") + " />\n<div class=\"dropdown-list invisible shrinkable\"></div>\n";
             }, "useData": true })
     };
 
@@ -284,8 +284,8 @@
         class: 'dropdown'
       },
       ui: {
-        button: 'button',
-        text: '.dropdown-text',
+        button: '.dropdown-button',
+        text: '.button-text',
         input: 'input'
       },
       events: {

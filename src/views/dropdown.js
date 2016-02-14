@@ -23,8 +23,8 @@ export default Marionette.LayoutView.extend({
     class: 'dropdown'
   },
   ui: {
-    button: 'button',
-    text: '.dropdown-text',
+    button: '.dropdown-button',
+    text: '.button-text',
     input: 'input'
   },
   events: {
