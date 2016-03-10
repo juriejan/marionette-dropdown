@@ -194,35 +194,37 @@
         }
       },
       hideList: function hideList(done) {
-        var listEl = this.list.$el;
-        // Shrink and hide the element
-        this.animating = true;
-        animation.shrink(listEl, 'height', function () {
-          this.animating = false;
-          this.expanded = false;
-          // Move the list element back to the view
-          listEl.appendTo(this.ui.list);
-          // Recover the list height
-          listEl.height(this.listHeight);
-          // Recover the list width
-          listEl.css('width', '');
-          // Remove focus from all items
-          listEl.children().removeClass('focus');
-          // Detach from the scroll and hiding events
-          $(window).off('click', this.hideListFunc);
-          this.scrollParent.off('scroll', this.onParentScrollFunc);
-          this.scrollParent.off('scroll', this.hideListFunc);
-          // Call the completed callback
-          if (done) {
-            done();
-          }
-          // Trigger the hidden event
-          this.trigger('hidden');
-          // Trigger freeze on parent if available
-          if (this.parent) {
-            this.parent.trigger('thaw');
-          }
-        }.bind(this));
+        if (!this.animating && this.expanded) {
+          var listEl = this.list.$el;
+          // Shrink and hide the element
+          this.animating = true;
+          animation.shrink(listEl, 'height', function () {
+            this.animating = false;
+            this.expanded = false;
+            // Move the list element back to the view
+            listEl.appendTo(this.ui.list);
+            // Recover the list height
+            listEl.height(this.listHeight);
+            // Recover the list width
+            listEl.css('width', '');
+            // Remove focus from all items
+            listEl.children().removeClass('focus');
+            // Detach from the scroll and hiding events
+            $(window).off('click', this.hideListFunc);
+            this.scrollParent.off('scroll', this.onParentScrollFunc);
+            this.scrollParent.off('scroll', this.hideListFunc);
+            // Call the completed callback
+            if (done) {
+              done();
+            }
+            // Trigger the hidden event
+            this.trigger('hidden');
+            // Trigger freeze on parent if available
+            if (this.parent) {
+              this.parent.trigger('thaw');
+            }
+          }.bind(this));
+        }
       }
     };
 
