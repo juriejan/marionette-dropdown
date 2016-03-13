@@ -14,7 +14,6 @@ export default {
   events: {
     'keydown': 'onKeyDown'
   },
-  preserveListWidth: false,
   initialize: function (options) {
     this.maxSize = options.maxSize
     this.expanded = false
@@ -44,12 +43,23 @@ export default {
     this.list.stopListening(this.collection, 'reset')
     this.listenTo(this.collection, 'reset', this.onCollectionReset)
   },
+  onAttach: function () {
+    var listEl = this.list.$el
+    // Apply parent styles
+    listEl.css(this.$el.css(['font-size', 'line-height']))
+    // Set the list width
+    this.listWidth = this.$el.outerWidth()
+    // Apply list width
+    listEl.outerWidth(this.listWidth)
+    // Move the list element to the page body
+    listEl.appendTo($('body'))
+  },
   onCollectionReset: function () {
     if (this.expanded) {
-      this.hideList(function () {
+      this.hideList(() => {
         this.list.render()
         this.showList()
-      }.bind(this))
+      })
     } else {
       this.list.render()
     }
@@ -69,11 +79,11 @@ export default {
     return {name: this.name}
   },
   setSelection: function (id) {
-    this.list.children.each(function (child) {
+    this.list.children.each((child) => {
       if (child.model.id === id) {
         this.onItemSelect(child)
       }
-    }.bind(this))
+    })
   },
   getSelection: function () {
     return this.selected
@@ -100,33 +110,23 @@ export default {
   showList: function () {
     if (!this.animating && !this.collection.isEmpty()) {
       var listEl = this.list.$el
-      // Apply parent styles
-      listEl.css(this.$el.css(['font-size', 'line-height']))
-      // Determine the height of the list
-      this.listHeight = this.list.getListHeight()
-      // Set the list width
-      if (this.preserveListWidth) {
-        this.listWidth = this.list.getListWidth()
-      } else {
-        this.listWidth = this.$el.outerWidth()
-      }
-      // Move the list element to the page body
-      listEl.appendTo($('body'))
-      // Apply list width
-      listEl.outerWidth(this.listWidth)
+      // Reset the list height
+      this.list.resetHeight()
+      var listHeight = listEl.height()
       // Decide which way to expand the list
       var elOffset = this.$el.offset()
       var windowHeight = $(window).height()
       var elHeight = this.$el.outerHeight()
-      var potentialTop = elOffset.top - this.listHeight
-      var potentialBottom = elOffset.top + elHeight + this.listHeight
+      var potentialTop = elOffset.top - listHeight
+      var potentialBottom = elOffset.top + elHeight + listHeight
       this.isExpandedToTop = (potentialBottom > windowHeight) && (potentialTop > 0)
+      // Position the list before animation
       this.positionList()
       // Trigger the dropdown show event
       this.trigger('dropdown:show')
       // Expand and show the list
       this.animating = true
-      animation.grow(listEl, 'height', this.listHeight, function () {
+      animation.grow(listEl, 'height', listHeight, function () {
         this.animating = false
         this.expanded = true
         this.list.refreshScroll()
@@ -149,15 +149,9 @@ export default {
       var listEl = this.list.$el
       // Shrink and hide the element
       this.animating = true
-      animation.shrink(listEl, 'height', function () {
+      animation.shrink(listEl, 'height', () => {
         this.animating = false
         this.expanded = false
-        // Move the list element back to the view
-        listEl.appendTo(this.ui.list)
-        // Recover the list height
-        listEl.height(this.listHeight)
-        // Recover the list width
-        listEl.css('width', '')
         // Remove focus from all items
         listEl.children().removeClass('focus')
         // Detach from the scroll and hiding events
@@ -170,7 +164,7 @@ export default {
         this.trigger('hidden')
         // Trigger freeze on parent if available
         if (this.parent) { this.parent.trigger('thaw') }
-      }.bind(this))
+      })
     }
   }
 }

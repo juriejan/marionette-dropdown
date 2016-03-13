@@ -59,7 +59,6 @@
       events: {
         'keydown': 'onKeyDown'
       },
-      preserveListWidth: false,
       initialize: function initialize(options) {
         this.maxSize = options.maxSize;
         this.expanded = false;
@@ -91,12 +90,25 @@
         this.list.stopListening(this.collection, 'reset');
         this.listenTo(this.collection, 'reset', this.onCollectionReset);
       },
+      onAttach: function onAttach() {
+        var listEl = this.list.$el;
+        // Apply parent styles
+        listEl.css(this.$el.css(['font-size', 'line-height']));
+        // Set the list width
+        this.listWidth = this.$el.outerWidth();
+        // Apply list width
+        listEl.outerWidth(this.listWidth);
+        // Move the list element to the page body
+        listEl.appendTo($('body'));
+      },
       onCollectionReset: function onCollectionReset() {
+        var _this = this;
+
         if (this.expanded) {
           this.hideList(function () {
-            this.list.render();
-            this.showList();
-          }.bind(this));
+            _this.list.render();
+            _this.showList();
+          });
         } else {
           this.list.render();
         }
@@ -116,11 +128,13 @@
         return { name: this.name };
       },
       setSelection: function setSelection(id) {
+        var _this2 = this;
+
         this.list.children.each(function (child) {
           if (child.model.id === id) {
-            this.onItemSelect(child);
+            _this2.onItemSelect(child);
           }
-        }.bind(this));
+        });
       },
       getSelection: function getSelection() {
         return this.selected;
@@ -147,33 +161,23 @@
       showList: function showList() {
         if (!this.animating && !this.collection.isEmpty()) {
           var listEl = this.list.$el;
-          // Apply parent styles
-          listEl.css(this.$el.css(['font-size', 'line-height']));
-          // Determine the height of the list
-          this.listHeight = this.list.getListHeight();
-          // Set the list width
-          if (this.preserveListWidth) {
-            this.listWidth = this.list.getListWidth();
-          } else {
-            this.listWidth = this.$el.outerWidth();
-          }
-          // Move the list element to the page body
-          listEl.appendTo($('body'));
-          // Apply list width
-          listEl.outerWidth(this.listWidth);
+          // Reset the list height
+          this.list.resetHeight();
+          var listHeight = listEl.height();
           // Decide which way to expand the list
           var elOffset = this.$el.offset();
           var windowHeight = $(window).height();
           var elHeight = this.$el.outerHeight();
-          var potentialTop = elOffset.top - this.listHeight;
-          var potentialBottom = elOffset.top + elHeight + this.listHeight;
+          var potentialTop = elOffset.top - listHeight;
+          var potentialBottom = elOffset.top + elHeight + listHeight;
           this.isExpandedToTop = potentialBottom > windowHeight && potentialTop > 0;
+          // Position the list before animation
           this.positionList();
           // Trigger the dropdown show event
           this.trigger('dropdown:show');
           // Expand and show the list
           this.animating = true;
-          animation.grow(listEl, 'height', this.listHeight, function () {
+          animation.grow(listEl, 'height', listHeight, function () {
             this.animating = false;
             this.expanded = true;
             this.list.refreshScroll();
@@ -194,36 +198,32 @@
         }
       },
       hideList: function hideList(done) {
+        var _this3 = this;
+
         if (!this.animating && this.expanded) {
           var listEl = this.list.$el;
           // Shrink and hide the element
           this.animating = true;
           animation.shrink(listEl, 'height', function () {
-            this.animating = false;
-            this.expanded = false;
-            // Move the list element back to the view
-            listEl.appendTo(this.ui.list);
-            // Recover the list height
-            listEl.height(this.listHeight);
-            // Recover the list width
-            listEl.css('width', '');
+            _this3.animating = false;
+            _this3.expanded = false;
             // Remove focus from all items
             listEl.children().removeClass('focus');
             // Detach from the scroll and hiding events
-            $(window).off('click', this.hideListFunc);
-            this.scrollParent.off('scroll', this.onParentScrollFunc);
-            this.scrollParent.off('scroll', this.hideListFunc);
+            $(window).off('click', _this3.hideListFunc);
+            _this3.scrollParent.off('scroll', _this3.onParentScrollFunc);
+            _this3.scrollParent.off('scroll', _this3.hideListFunc);
             // Call the completed callback
             if (done) {
               done();
             }
             // Trigger the hidden event
-            this.trigger('hidden');
+            _this3.trigger('hidden');
             // Trigger freeze on parent if available
-            if (this.parent) {
-              this.parent.trigger('thaw');
+            if (_this3.parent) {
+              _this3.parent.trigger('thaw');
             }
-          }.bind(this));
+          });
         }
       }
     };
