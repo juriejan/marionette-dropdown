@@ -78,7 +78,7 @@ export default {
   },
   renderAndShowList: function () {
     this.list.render()
-    return this.showList().then(() => {
+    return this.showList(() => {
       this.listenTo(this.list, 'select', this.onItemSelect)
     })
   },
@@ -114,7 +114,7 @@ export default {
     }
     listEl.css('left', elOffset.left)
   },
-  showList: function () {
+  showList: function (done) {
     if (!this.showing && !this.hiding && !this.collection.isEmpty()) {
       var listEl = this.list.$el
       // Reset the list height
@@ -142,10 +142,12 @@ export default {
       })
       // Expand and show the list
       this.showing = true
-      return animation.grow(listEl, 'height', listHeight, () => {
+      return animation.grow(listEl, 'height', listHeight).then(() => {
         this.showing = false
         this.expanded = true
         this.list.refreshScroll()
+        // Call the completed callback
+        if (done) { done() }
         // Trigger freeze on parent if available
         if (this.parent) { this.parent.trigger('freeze') }
       })
@@ -156,7 +158,7 @@ export default {
       var listEl = this.list.$el
       // Shrink and hide the element
       this.hiding = true
-      return animation.shrink(listEl, 'height', () => {
+      return animation.shrink(listEl, 'height').then(() => {
         this.hiding = false
         this.expanded = false
         // Remove focus from all items

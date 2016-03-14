@@ -131,7 +131,7 @@
         var _this2 = this;
 
         this.list.render();
-        return this.showList().then(function () {
+        return this.showList(function () {
           _this2.listenTo(_this2.list, 'select', _this2.onItemSelect);
         });
       },
@@ -169,7 +169,7 @@
         }
         listEl.css('left', elOffset.left);
       },
-      showList: function showList() {
+      showList: function showList(done) {
         var _this4 = this;
 
         if (!this.showing && !this.hiding && !this.collection.isEmpty()) {
@@ -199,10 +199,14 @@
           });
           // Expand and show the list
           this.showing = true;
-          return animation.grow(listEl, 'height', listHeight, function () {
+          return animation.grow(listEl, 'height', listHeight).then(function () {
             _this4.showing = false;
             _this4.expanded = true;
             _this4.list.refreshScroll();
+            // Call the completed callback
+            if (done) {
+              done();
+            }
             // Trigger freeze on parent if available
             if (_this4.parent) {
               _this4.parent.trigger('freeze');
@@ -217,7 +221,7 @@
           var listEl = this.list.$el;
           // Shrink and hide the element
           this.hiding = true;
-          return animation.shrink(listEl, 'height', function () {
+          return animation.shrink(listEl, 'height').then(function () {
             _this5.hiding = false;
             _this5.expanded = false;
             // Remove focus from all items
