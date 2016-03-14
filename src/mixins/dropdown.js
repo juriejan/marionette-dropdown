@@ -124,24 +124,24 @@ export default {
       this.positionList()
       // Trigger the dropdown show event
       this.trigger('dropdown:show')
+      // Attach to event for hiding and scrolling the list on scroll
+      this.onParentScrollFunc = this.onParentScroll.bind(this)
+      this.scrollParent.on('scroll', this.onParentScrollFunc)
+      // Attach to event for hiding the list on click (skip current)
+      _.defer(() => {
+        this.hideListFunc = _.bind(this.hideList, this, null)
+        $(window).one('click', this.hideListFunc)
+        this.scrollParent.one('scroll', this.hideListFunc)
+      })
       // Expand and show the list
       this.animating = true
-      animation.grow(listEl, 'height', listHeight, function () {
+      return animation.grow(listEl, 'height', listHeight, () => {
         this.animating = false
         this.expanded = true
         this.list.refreshScroll()
         // Trigger freeze on parent if available
         if (this.parent) { this.parent.trigger('freeze') }
-      }.bind(this))
-      // Attach to event for hiding and scrolling the list on scroll
-      this.onParentScrollFunc = this.onParentScroll.bind(this)
-      this.scrollParent.on('scroll', this.onParentScrollFunc)
-      // Attach to event for hiding the list on click (skip current)
-      _.defer(function () {
-        this.hideListFunc = _.bind(this.hideList, this, null)
-        $(window).one('click', this.hideListFunc)
-        this.scrollParent.one('scroll', this.hideListFunc)
-      }.bind(this))
+      })
     }
   },
   hideList: function (done) {
@@ -149,7 +149,7 @@ export default {
       var listEl = this.list.$el
       // Shrink and hide the element
       this.animating = true
-      animation.shrink(listEl, 'height', () => {
+      return animation.shrink(listEl, 'height', () => {
         this.animating = false
         this.expanded = false
         // Remove focus from all items
