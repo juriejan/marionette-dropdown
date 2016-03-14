@@ -27,17 +27,19 @@ export default {
     }
   },
   onRender: function () {
+    if (this.expanded) { this.list.$el.css({opacity: 1}) }
+  },
+  onBeforeShow: function () {
     this.list = new this.focusListView({
       maxSize: this.maxSize,
       childView: this.dropdownItemView,
       collection: this.collection
     })
     this.listenTo(this.list, 'select', this.onItemSelect)
-    if (this.expanded) { this.list.$el.css({opacity: 1}) }
-  },
-  onShow: function () {
     this.getRegion('list').show(this.list)
+    // Determine the scroll parent
     this.scrollParent = this.$el.closest('.nano-content')
+    // Flatten the list element
     animation.flat(this.list.$el)
     // Customize reset render for the focus list
     this.list.stopListening(this.collection, 'reset')
