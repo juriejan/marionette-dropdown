@@ -89,9 +89,8 @@
         this.scrollParent = this.$el.closest('.nano-content');
         // Flatten the list element
         animation.flat(this.list.$el);
-        // Customize reset render for the focus list
+        // Prevent list from automatically rendering on collection reset
         this.list.stopListening(this.collection, 'reset');
-        this.listenTo(this.collection, 'reset', this.onCollectionReset);
       },
       onAttach: function onAttach() {
         // Apply parent styles
@@ -169,10 +168,13 @@
         }
         listEl.css('left', elOffset.left);
       },
-      showList: function showList(done) {
+      showList: function showList() {
         var _this4 = this;
 
         if (!this.showing && !this.hiding && !this.collection.isEmpty()) {
+          // Render the list before showing
+          this.list.render();
+          // Get the list element
           var listEl = this.list.$el;
           // Reset the list height
           this.list.resetHeight();
@@ -203,22 +205,26 @@
             _this4.showing = false;
             _this4.expanded = true;
             _this4.list.refreshScroll();
-            // Call the completed callback
-            if (done) {
-              done();
-            }
+            // Listen to select events
+            _this4.listenTo(_this4.list, 'select', _this4.onItemSelect);
             // Trigger freeze on parent if available
             if (_this4.parent) {
               _this4.parent.trigger('freeze');
             }
           });
+        } else {
+          return Promise.resolve();
         }
       },
-      hideList: function hideList(done) {
+      hideList: function hideList() {
         var _this5 = this;
 
         if (!this.hiding) {
           var listEl = this.list.$el;
+          // Remove the item select handler after potential handling
+          _.defer(function () {
+            return _this5.stopListening(_this5.list, 'select', _this5.onItemSelect);
+          });
           // Shrink and hide the element
           this.hiding = true;
           return animation.shrink(listEl, 'height').then(function () {
@@ -230,10 +236,6 @@
             $(window).off('click', _this5.hideListFunc);
             _this5.scrollParent.off('scroll', _this5.onParentScrollFunc);
             _this5.scrollParent.off('scroll', _this5.hideListFunc);
-            // Call the completed callback
-            if (done) {
-              done();
-            }
             // Trigger the hidden event
             _this5.trigger('hidden');
             // Trigger freeze on parent if available
@@ -241,6 +243,8 @@
               _this5.parent.trigger('thaw');
             }
           });
+        } else {
+          return Promise.resolve();
         }
       }
     };

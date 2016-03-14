@@ -42,9 +42,8 @@ export default {
     this.scrollParent = this.$el.closest('.nano-content')
     // Flatten the list element
     animation.flat(this.list.$el)
-    // Customize reset render for the focus list
+    // Prevent list from automatically rendering on collection reset
     this.list.stopListening(this.collection, 'reset')
-    this.listenTo(this.collection, 'reset', this.onCollectionReset)
   },
   onAttach: function () {
     // Apply parent styles
@@ -114,8 +113,11 @@ export default {
     }
     listEl.css('left', elOffset.left)
   },
-  showList: function (done) {
+  showList: function () {
     if (!this.showing && !this.hiding && !this.collection.isEmpty()) {
+      // Render the list before showing
+      this.list.render()
+      // Get the list element
       var listEl = this.list.$el
       // Reset the list height
       this.list.resetHeight()
@@ -146,16 +148,20 @@ export default {
         this.showing = false
         this.expanded = true
         this.list.refreshScroll()
-        // Call the completed callback
-        if (done) { done() }
+        // Listen to select events
+        this.listenTo(this.list, 'select', this.onItemSelect)
         // Trigger freeze on parent if available
         if (this.parent) { this.parent.trigger('freeze') }
       })
+    } else {
+      return Promise.resolve()
     }
   },
-  hideList: function (done) {
+  hideList: function () {
     if (!this.hiding) {
       var listEl = this.list.$el
+      // Remove the item select handler after potential handling
+      _.defer(() => this.stopListening(this.list, 'select', this.onItemSelect))
       // Shrink and hide the element
       this.hiding = true
       return animation.shrink(listEl, 'height').then(() => {
@@ -167,13 +173,13 @@ export default {
         $(window).off('click', this.hideListFunc)
         this.scrollParent.off('scroll', this.onParentScrollFunc)
         this.scrollParent.off('scroll', this.hideListFunc)
-        // Call the completed callback
-        if (done) { done() }
         // Trigger the hidden event
         this.trigger('hidden')
         // Trigger freeze on parent if available
         if (this.parent) { this.parent.trigger('thaw') }
       })
+    } else {
+      return Promise.resolve()
     }
   }
 }
