@@ -44,15 +44,12 @@ export default {
     this.listenTo(this.collection, 'reset', this.onCollectionReset)
   },
   onAttach: function () {
-    var listEl = this.list.$el
     // Apply parent styles
-    listEl.css(this.$el.css(['font-size', 'line-height']))
-    // Set the list width
-    this.listWidth = this.$el.outerWidth()
-    // Apply list width
-    listEl.outerWidth(this.listWidth)
+    this.list.$el.css(this.$el.css(['font-size', 'line-height']))
+    // Reset the list width
+    this.resetListWidth()
     // Move the list element to the page body
-    listEl.appendTo($('body'))
+    this.list.$el.appendTo($('body'))
   },
   onCollectionReset: function () {
     if (this.expanded) {
@@ -94,6 +91,9 @@ export default {
     } else {
       this.showList()
     }
+  },
+  resetListWidth: function () {
+    this.list.$el.outerWidth(this.$el.outerWidth())
   },
   positionList: function () {
     var listEl = this.list.$el

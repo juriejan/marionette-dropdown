@@ -121,6 +121,7 @@ export default Marionette.LayoutView.extend({
     })
     el.css({visibility: '', 'min-width': minWidth})
     el.html(oldText)
+    this.resetListWidth()
   },
   setVisibleOptions: function (visible) {
     // Set the visibility of each model in the collection

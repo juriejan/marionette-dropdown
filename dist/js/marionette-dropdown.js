@@ -91,15 +91,12 @@
         this.listenTo(this.collection, 'reset', this.onCollectionReset);
       },
       onAttach: function onAttach() {
-        var listEl = this.list.$el;
         // Apply parent styles
-        listEl.css(this.$el.css(['font-size', 'line-height']));
-        // Set the list width
-        this.listWidth = this.$el.outerWidth();
-        // Apply list width
-        listEl.outerWidth(this.listWidth);
+        this.list.$el.css(this.$el.css(['font-size', 'line-height']));
+        // Reset the list width
+        this.resetListWidth();
         // Move the list element to the page body
-        listEl.appendTo($('body'));
+        this.list.$el.appendTo($('body'));
       },
       onCollectionReset: function onCollectionReset() {
         var _this = this;
@@ -145,6 +142,9 @@
         } else {
           this.showList();
         }
+      },
+      resetListWidth: function resetListWidth() {
+        this.list.$el.outerWidth(this.$el.outerWidth());
       },
       positionList: function positionList() {
         var listEl = this.list.$el;
@@ -392,6 +392,7 @@
         });
         el.css({ visibility: '', 'min-width': minWidth });
         el.html(oldText);
+        this.resetListWidth();
       },
       setVisibleOptions: function setVisibleOptions(visible) {
         // Set the visibility of each model in the collection
