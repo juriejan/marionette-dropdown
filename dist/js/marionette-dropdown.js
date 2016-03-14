@@ -62,7 +62,8 @@
       initialize: function initialize(options) {
         this.maxSize = options.maxSize;
         this.expanded = false;
-        this.animating = false;
+        this.showing = false;
+        this.hiding = false;
         this.name = options.name;
         this.parent = options.parent;
         if (this.getCollection) {
@@ -103,13 +104,13 @@
       onCollectionReset: function onCollectionReset() {
         var _this = this;
 
+        this.stopListening(this.list, 'select', this.onItemSelect);
         if (this.expanded) {
           this.hideList(function () {
-            _this.list.render();
-            _this.showList();
+            return _this.renderAndShowList();
           });
         } else {
-          this.list.render();
+          this.renderAndShowList();
         }
       },
       onKeyDown: function onKeyDown(e) {
@@ -126,12 +127,20 @@
       serializeData: function serializeData() {
         return { name: this.name };
       },
-      setSelection: function setSelection(id) {
+      renderAndShowList: function renderAndShowList() {
         var _this2 = this;
+
+        this.list.render();
+        return this.showList().then(function () {
+          _this2.listenTo(_this2.list, 'select', _this2.onItemSelect);
+        });
+      },
+      setSelection: function setSelection(id) {
+        var _this3 = this;
 
         this.list.children.each(function (child) {
           if (child.model.id === id) {
-            _this2.onItemSelect(child);
+            _this3.onItemSelect(child);
           }
         });
       },
@@ -161,9 +170,9 @@
         listEl.css('left', elOffset.left);
       },
       showList: function showList() {
-        var _this3 = this;
+        var _this4 = this;
 
-        if (!this.animating && !this.collection.isEmpty()) {
+        if (!this.showing && !this.hiding && !this.collection.isEmpty()) {
           var listEl = this.list.$el;
           // Reset the list height
           this.list.resetHeight();
@@ -184,48 +193,48 @@
           this.scrollParent.on('scroll', this.onParentScrollFunc);
           // Attach to event for hiding the list on click (skip current)
           _.defer(function () {
-            _this3.hideListFunc = _.bind(_this3.hideList, _this3, null);
-            $(window).one('click', _this3.hideListFunc);
-            _this3.scrollParent.one('scroll', _this3.hideListFunc);
+            _this4.hideListFunc = _.bind(_this4.hideList, _this4, null);
+            $(window).one('click', _this4.hideListFunc);
+            _this4.scrollParent.one('scroll', _this4.hideListFunc);
           });
           // Expand and show the list
-          this.animating = true;
+          this.showing = true;
           return animation.grow(listEl, 'height', listHeight, function () {
-            _this3.animating = false;
-            _this3.expanded = true;
-            _this3.list.refreshScroll();
+            _this4.showing = false;
+            _this4.expanded = true;
+            _this4.list.refreshScroll();
             // Trigger freeze on parent if available
-            if (_this3.parent) {
-              _this3.parent.trigger('freeze');
+            if (_this4.parent) {
+              _this4.parent.trigger('freeze');
             }
           });
         }
       },
       hideList: function hideList(done) {
-        var _this4 = this;
+        var _this5 = this;
 
-        if (!this.animating && this.expanded) {
+        if (!this.hiding) {
           var listEl = this.list.$el;
           // Shrink and hide the element
-          this.animating = true;
+          this.hiding = true;
           return animation.shrink(listEl, 'height', function () {
-            _this4.animating = false;
-            _this4.expanded = false;
+            _this5.hiding = false;
+            _this5.expanded = false;
             // Remove focus from all items
             listEl.children().removeClass('focus');
             // Detach from the scroll and hiding events
-            $(window).off('click', _this4.hideListFunc);
-            _this4.scrollParent.off('scroll', _this4.onParentScrollFunc);
-            _this4.scrollParent.off('scroll', _this4.hideListFunc);
+            $(window).off('click', _this5.hideListFunc);
+            _this5.scrollParent.off('scroll', _this5.onParentScrollFunc);
+            _this5.scrollParent.off('scroll', _this5.hideListFunc);
             // Call the completed callback
             if (done) {
               done();
             }
             // Trigger the hidden event
-            _this4.trigger('hidden');
+            _this5.trigger('hidden');
             // Trigger freeze on parent if available
-            if (_this4.parent) {
-              _this4.parent.trigger('thaw');
+            if (_this5.parent) {
+              _this5.parent.trigger('thaw');
             }
           });
         }

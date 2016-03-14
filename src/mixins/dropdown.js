@@ -17,7 +17,8 @@ export default {
   initialize: function (options) {
     this.maxSize = options.maxSize
     this.expanded = false
-    this.animating = false
+    this.showing = false
+    this.hiding = false
     this.name = options.name
     this.parent = options.parent
     if (this.getCollection) {
@@ -54,13 +55,11 @@ export default {
     this.list.$el.appendTo($('body'))
   },
   onCollectionReset: function () {
+    this.stopListening(this.list, 'select', this.onItemSelect)
     if (this.expanded) {
-      this.hideList(() => {
-        this.list.render()
-        this.showList()
-      })
+      this.hideList(() => this.renderAndShowList())
     } else {
-      this.list.render()
+      this.renderAndShowList()
     }
   },
   onKeyDown: function (e) {
@@ -76,6 +75,12 @@ export default {
   },
   serializeData: function () {
     return {name: this.name}
+  },
+  renderAndShowList: function () {
+    this.list.render()
+    return this.showList().then(() => {
+      this.listenTo(this.list, 'select', this.onItemSelect)
+    })
   },
   setSelection: function (id) {
     this.list.children.each((child) => {
@@ -110,7 +115,7 @@ export default {
     listEl.css('left', elOffset.left)
   },
   showList: function () {
-    if (!this.animating && !this.collection.isEmpty()) {
+    if (!this.showing && !this.hiding && !this.collection.isEmpty()) {
       var listEl = this.list.$el
       // Reset the list height
       this.list.resetHeight()
@@ -136,9 +141,9 @@ export default {
         this.scrollParent.one('scroll', this.hideListFunc)
       })
       // Expand and show the list
-      this.animating = true
+      this.showing = true
       return animation.grow(listEl, 'height', listHeight, () => {
-        this.animating = false
+        this.showing = false
         this.expanded = true
         this.list.refreshScroll()
         // Trigger freeze on parent if available
@@ -147,12 +152,12 @@ export default {
     }
   },
   hideList: function (done) {
-    if (!this.animating && this.expanded) {
+    if (!this.hiding) {
       var listEl = this.list.$el
       // Shrink and hide the element
-      this.animating = true
+      this.hiding = true
       return animation.shrink(listEl, 'height', () => {
-        this.animating = false
+        this.hiding = false
         this.expanded = false
         // Remove focus from all items
         listEl.children().removeClass('focus')
