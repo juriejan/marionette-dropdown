@@ -38,8 +38,6 @@ export default Marionette.LayoutView.extend({
     utils.loadingActions(this, true)
   },
   onDropdownShow: function () {
-    // Remove focus from all items
-    this.list.ui.list.children().removeClass('focus')
     // Indicate currently selected item with focus
     if (this.selected) {
       var child = this.list.children.findByModel(this.selected)
@@ -135,7 +133,6 @@ export default Marionette.LayoutView.extend({
       }
     }
     // Re-render the list and refresh calculations
-    this.list.render()
     this.refresh()
   }
 })

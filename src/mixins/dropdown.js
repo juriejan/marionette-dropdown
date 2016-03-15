@@ -8,11 +8,8 @@ export default {
   regions: {
     list: 'div.dropdown-list'
   },
-  ui: {
-    list: 'div.dropdown-list'
-  },
   events: {
-    'keydown': 'onKeyDown'
+    keydown: 'onKeyDown'
   },
   initialize: function (options) {
     this.maxSize = options.maxSize
@@ -31,38 +28,7 @@ export default {
     if (this.expanded) { this.list.$el.css({opacity: 1}) }
   },
   onBeforeShow: function () {
-    this.list = new this.focusListView({
-      maxSize: this.maxSize,
-      childView: this.dropdownItemView,
-      collection: this.collection
-    })
-    this.listenTo(this.list, 'select', this.onItemSelect)
-    this.getRegion('list').show(this.list)
-    // Determine the scroll parent
     this.scrollParent = this.$el.closest('.nano-content')
-    // Flatten the list element
-    animation.flat(this.list.$el)
-    // Prevent list from automatically rendering on collection reset
-    this.list.stopListening(this.collection, 'reset')
-  },
-  onAttach: function () {
-    // Apply parent styles
-    this.list.$el.css(this.$el.css(['font-size', 'line-height']))
-    // Reset the list width
-    this.resetListWidth()
-    // Move the list element to the page body
-    this.list.$el.appendTo($('body'))
-  },
-  onCollectionReset: function () {
-    this.stopListening(this.list, 'select', this.onItemSelect)
-    if (this.expanded) {
-      this.hideList(() => this.renderAndShowList())
-    } else {
-      this.renderAndShowList()
-    }
-  },
-  onKeyDown: function (e) {
-    this.list.onKeyDown(e)
   },
   onParentScroll: function (e) {
     this.positionList()
@@ -72,14 +38,11 @@ export default {
     this.scrollParent.off('scroll', this.hideListFunc)
     this.scrollParent.off('scroll', this.onParentScrollFunc)
   },
+  onKeyDown: function (e) {
+    if (this.list.onKeyDown) this.list.onKeyDown(e)
+  },
   serializeData: function () {
     return {name: this.name}
-  },
-  renderAndShowList: function () {
-    this.list.render()
-    return this.showList(() => {
-      this.listenTo(this.list, 'select', this.onItemSelect)
-    })
   },
   setSelection: function (id) {
     this.list.children.each((child) => {
@@ -115,8 +78,25 @@ export default {
   },
   showList: function () {
     if (!this.showing && !this.hiding && !this.collection.isEmpty()) {
+      // ---
+      this.list = new this.focusListView({
+        maxSize: this.maxSize,
+        childView: this.dropdownItemView,
+        collection: this.collection
+      })
+      // Flatten the list element
+      animation.flat(this.list.$el)
+      // Prevent list from automatically rendering on collection reset
+      this.list.stopListening(this.collection, 'reset')
+      // ---
       // Render the list before showing
       this.list.render()
+      // Apply parent styles
+      this.list.$el.css(this.$el.css(['font-size', 'line-height']))
+      // Reset the list width
+      this.resetListWidth()
+      // Move the list element to the page body
+      this.list.$el.appendTo($('body'))
       // Get the list element
       var listEl = this.list.$el
       // Reset the list height
@@ -159,16 +139,15 @@ export default {
   },
   hideList: function () {
     if (!this.hiding) {
-      var listEl = this.list.$el
       // Remove the item select handler after potential handling
       _.defer(() => this.stopListening(this.list, 'select', this.onItemSelect))
       // Shrink and hide the element
       this.hiding = true
-      return animation.shrink(listEl, 'height').then(() => {
+      return animation.shrink(this.list.$el, 'height').then(() => {
         this.hiding = false
         this.expanded = false
-        // Remove focus from all items
-        listEl.children().removeClass('focus')
+        // Destory the list
+        this.list.destroy()
         // Detach from the scroll and hiding events
         $(window).off('click', this.hideListFunc)
         this.scrollParent.off('scroll', this.onParentScrollFunc)

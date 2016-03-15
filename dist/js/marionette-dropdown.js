@@ -53,11 +53,8 @@
       regions: {
         list: 'div.dropdown-list'
       },
-      ui: {
-        list: 'div.dropdown-list'
-      },
       events: {
-        'keydown': 'onKeyDown'
+        keydown: 'onKeyDown'
       },
       initialize: function initialize(options) {
         this.maxSize = options.maxSize;
@@ -78,42 +75,7 @@
         }
       },
       onBeforeShow: function onBeforeShow() {
-        this.list = new this.focusListView({
-          maxSize: this.maxSize,
-          childView: this.dropdownItemView,
-          collection: this.collection
-        });
-        this.listenTo(this.list, 'select', this.onItemSelect);
-        this.getRegion('list').show(this.list);
-        // Determine the scroll parent
         this.scrollParent = this.$el.closest('.nano-content');
-        // Flatten the list element
-        animation.flat(this.list.$el);
-        // Prevent list from automatically rendering on collection reset
-        this.list.stopListening(this.collection, 'reset');
-      },
-      onAttach: function onAttach() {
-        // Apply parent styles
-        this.list.$el.css(this.$el.css(['font-size', 'line-height']));
-        // Reset the list width
-        this.resetListWidth();
-        // Move the list element to the page body
-        this.list.$el.appendTo($('body'));
-      },
-      onCollectionReset: function onCollectionReset() {
-        var _this = this;
-
-        this.stopListening(this.list, 'select', this.onItemSelect);
-        if (this.expanded) {
-          this.hideList(function () {
-            return _this.renderAndShowList();
-          });
-        } else {
-          this.renderAndShowList();
-        }
-      },
-      onKeyDown: function onKeyDown(e) {
-        this.list.onKeyDown(e);
       },
       onParentScroll: function onParentScroll(e) {
         this.positionList();
@@ -123,23 +85,18 @@
         this.scrollParent.off('scroll', this.hideListFunc);
         this.scrollParent.off('scroll', this.onParentScrollFunc);
       },
+      onKeyDown: function onKeyDown(e) {
+        if (this.list.onKeyDown) this.list.onKeyDown(e);
+      },
       serializeData: function serializeData() {
         return { name: this.name };
       },
-      renderAndShowList: function renderAndShowList() {
-        var _this2 = this;
-
-        this.list.render();
-        return this.showList(function () {
-          _this2.listenTo(_this2.list, 'select', _this2.onItemSelect);
-        });
-      },
       setSelection: function setSelection(id) {
-        var _this3 = this;
+        var _this = this;
 
         this.list.children.each(function (child) {
           if (child.model.id === id) {
-            _this3.onItemSelect(child);
+            _this.onItemSelect(child);
           }
         });
       },
@@ -169,11 +126,28 @@
         listEl.css('left', elOffset.left);
       },
       showList: function showList() {
-        var _this4 = this;
+        var _this2 = this;
 
         if (!this.showing && !this.hiding && !this.collection.isEmpty()) {
+          // ---
+          this.list = new this.focusListView({
+            maxSize: this.maxSize,
+            childView: this.dropdownItemView,
+            collection: this.collection
+          });
+          // Flatten the list element
+          animation.flat(this.list.$el);
+          // Prevent list from automatically rendering on collection reset
+          this.list.stopListening(this.collection, 'reset');
+          // ---
           // Render the list before showing
           this.list.render();
+          // Apply parent styles
+          this.list.$el.css(this.$el.css(['font-size', 'line-height']));
+          // Reset the list width
+          this.resetListWidth();
+          // Move the list element to the page body
+          this.list.$el.appendTo($('body'));
           // Get the list element
           var listEl = this.list.$el;
           // Reset the list height
@@ -195,21 +169,21 @@
           this.scrollParent.on('scroll', this.onParentScrollFunc);
           // Attach to event for hiding the list on click (skip current)
           _.defer(function () {
-            _this4.hideListFunc = _.bind(_this4.hideList, _this4, null);
-            $(window).one('click', _this4.hideListFunc);
-            _this4.scrollParent.one('scroll', _this4.hideListFunc);
+            _this2.hideListFunc = _.bind(_this2.hideList, _this2, null);
+            $(window).one('click', _this2.hideListFunc);
+            _this2.scrollParent.one('scroll', _this2.hideListFunc);
           });
           // Expand and show the list
           this.showing = true;
           return animation.grow(listEl, 'height', listHeight).then(function () {
-            _this4.showing = false;
-            _this4.expanded = true;
-            _this4.list.refreshScroll();
+            _this2.showing = false;
+            _this2.expanded = true;
+            _this2.list.refreshScroll();
             // Listen to select events
-            _this4.listenTo(_this4.list, 'select', _this4.onItemSelect);
+            _this2.listenTo(_this2.list, 'select', _this2.onItemSelect);
             // Trigger freeze on parent if available
-            if (_this4.parent) {
-              _this4.parent.trigger('freeze');
+            if (_this2.parent) {
+              _this2.parent.trigger('freeze');
             }
           });
         } else {
@@ -217,30 +191,29 @@
         }
       },
       hideList: function hideList() {
-        var _this5 = this;
+        var _this3 = this;
 
         if (!this.hiding) {
-          var listEl = this.list.$el;
           // Remove the item select handler after potential handling
           _.defer(function () {
-            return _this5.stopListening(_this5.list, 'select', _this5.onItemSelect);
+            return _this3.stopListening(_this3.list, 'select', _this3.onItemSelect);
           });
           // Shrink and hide the element
           this.hiding = true;
-          return animation.shrink(listEl, 'height').then(function () {
-            _this5.hiding = false;
-            _this5.expanded = false;
-            // Remove focus from all items
-            listEl.children().removeClass('focus');
+          return animation.shrink(this.list.$el, 'height').then(function () {
+            _this3.hiding = false;
+            _this3.expanded = false;
+            // Destory the list
+            _this3.list.destroy();
             // Detach from the scroll and hiding events
-            $(window).off('click', _this5.hideListFunc);
-            _this5.scrollParent.off('scroll', _this5.onParentScrollFunc);
-            _this5.scrollParent.off('scroll', _this5.hideListFunc);
+            $(window).off('click', _this3.hideListFunc);
+            _this3.scrollParent.off('scroll', _this3.onParentScrollFunc);
+            _this3.scrollParent.off('scroll', _this3.hideListFunc);
             // Trigger the hidden event
-            _this5.trigger('hidden');
+            _this3.trigger('hidden');
             // Trigger freeze on parent if available
-            if (_this5.parent) {
-              _this5.parent.trigger('thaw');
+            if (_this3.parent) {
+              _this3.parent.trigger('thaw');
             }
           });
         } else {
@@ -290,7 +263,7 @@
             }, "compiler": [7, ">= 4.0.0"], "main": function main(container, depth0, helpers, partials, data) {
                 var stack1;
 
-                return "<div class=\"dropdown-button\">\n  <div class=\"button-text\"></div>\n  <i class=\"icon-expand\" />\n</div>\n<input type=\"hidden\"" + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {}, depth0 != null ? depth0.name : depth0, { "name": "if", "hash": {}, "fn": container.program(1, data, 0), "inverse": container.noop, "data": data })) != null ? stack1 : "") + " />\n<div class=\"dropdown-list invisible shrinkable\"></div>\n";
+                return "<div class=\"dropdown-button\">\n  <div class=\"button-text\"></div>\n  <i class=\"icon-expand\" />\n</div>\n<input type=\"hidden\"" + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {}, depth0 != null ? depth0.name : depth0, { "name": "if", "hash": {}, "fn": container.program(1, data, 0), "inverse": container.noop, "data": data })) != null ? stack1 : "") + " />\n";
             }, "useData": true })
     };
 
@@ -322,8 +295,6 @@
         utils.loadingActions(this, true);
       },
       onDropdownShow: function onDropdownShow() {
-        // Remove focus from all items
-        this.list.ui.list.children().removeClass('focus');
         // Indicate currently selected item with focus
         if (this.selected) {
           var child = this.list.children.findByModel(this.selected);
@@ -427,7 +398,6 @@
           }
         }
         // Re-render the list and refresh calculations
-        this.list.render();
         this.refresh();
       }
     });
