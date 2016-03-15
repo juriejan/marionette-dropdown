@@ -61,7 +61,6 @@
         this.expanded = false;
         this.showing = false;
         this.hiding = false;
-        this.overlay = options.overlay;
         this.name = options.name;
         this.parent = options.parent;
         if (this.getCollection) {
