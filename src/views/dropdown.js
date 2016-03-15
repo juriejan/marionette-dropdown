@@ -1,4 +1,5 @@
 
+import $ from 'jquery'
 import _ from 'lodash'
 
 import Marionette from 'marionette'
@@ -66,6 +67,9 @@ export default Marionette.LayoutView.extend({
   onItemSelect: function (child) {
     this.select(child.model, true)
     this.hideList()
+  },
+  getOverlay: function () {
+    return $('body')
   },
   getFirst: function () {
     var visible = this.collection.filter(function (o) {

@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('lodash'), require('backbone'), require('marionette'), require('cocktail'), require('focuslist'), require('jquery'), require('animation'), require('handlebars')) :
-    typeof define === 'function' && define.amd ? define(['lodash', 'backbone', 'marionette', 'cocktail', 'focuslist', 'jquery', 'animation', 'handlebars'], factory) :
-    (global.dropdown = factory(global._,global.Backbone,global.Marionette,global.Cocktail,global.focuslist,global.$,global.animation,global.Handlebars));
-}(this, function (_,Backbone,Marionette,Cocktail,focuslist,$,animation,handlebars) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('lodash'), require('backbone'), require('marionette'), require('cocktail'), require('jquery'), require('focuslist'), require('animation'), require('handlebars')) :
+    typeof define === 'function' && define.amd ? define(['lodash', 'backbone', 'marionette', 'cocktail', 'jquery', 'focuslist', 'animation', 'handlebars'], factory) :
+    (global.dropdown = factory(global._,global.Backbone,global.Marionette,global.Cocktail,global.$,global.focuslist,global.animation,global.Handlebars));
+}(this, function (_,Backbone,Marionette,Cocktail,$,focuslist,animation,handlebars) { 'use strict';
 
     _ = 'default' in _ ? _['default'] : _;
     Backbone = 'default' in Backbone ? Backbone['default'] : Backbone;
@@ -61,6 +61,7 @@
         this.expanded = false;
         this.showing = false;
         this.hiding = false;
+        this.overlay = options.overlay;
         this.name = options.name;
         this.parent = options.parent;
         if (this.getCollection) {
@@ -129,7 +130,7 @@
         var _this2 = this;
 
         if (!this.showing && !this.hiding && !this.collection.isEmpty()) {
-          // ---
+          // Create the lost view
           this.list = new this.focusListView({
             maxSize: this.maxSize,
             childView: this.dropdownItemView,
@@ -139,15 +140,15 @@
           animation.flat(this.list.$el);
           // Prevent list from automatically rendering on collection reset
           this.list.stopListening(this.collection, 'reset');
-          // ---
           // Render the list before showing
           this.list.render();
           // Apply parent styles
           this.list.$el.css(this.$el.css(['font-size', 'line-height']));
           // Reset the list width
           this.resetListWidth();
-          // Move the list element to the page body
-          this.list.$el.appendTo($('body'));
+          // Move the list element to the indicated overlay
+          console.log(this.getOverlay());
+          this.getOverlay().append(this.list.$el);
           // Get the list element
           var listEl = this.list.$el;
           // Reset the list height
@@ -327,6 +328,9 @@
       onItemSelect: function onItemSelect(child) {
         this.select(child.model, true);
         this.hideList();
+      },
+      getOverlay: function getOverlay() {
+        return $('body');
       },
       getFirst: function getFirst() {
         var visible = this.collection.filter(function (o) {

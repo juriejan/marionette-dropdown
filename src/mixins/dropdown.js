@@ -16,6 +16,7 @@ export default {
     this.expanded = false
     this.showing = false
     this.hiding = false
+    this.overlay = options.overlay
     this.name = options.name
     this.parent = options.parent
     if (this.getCollection) {
@@ -78,7 +79,7 @@ export default {
   },
   showList: function () {
     if (!this.showing && !this.hiding && !this.collection.isEmpty()) {
-      // ---
+      // Create the lost view
       this.list = new this.focusListView({
         maxSize: this.maxSize,
         childView: this.dropdownItemView,
@@ -88,15 +89,15 @@ export default {
       animation.flat(this.list.$el)
       // Prevent list from automatically rendering on collection reset
       this.list.stopListening(this.collection, 'reset')
-      // ---
       // Render the list before showing
       this.list.render()
       // Apply parent styles
       this.list.$el.css(this.$el.css(['font-size', 'line-height']))
       // Reset the list width
       this.resetListWidth()
-      // Move the list element to the page body
-      this.list.$el.appendTo($('body'))
+      // Move the list element to the indicated overlay
+      console.log(this.getOverlay())
+      this.getOverlay().append(this.list.$el)
       // Get the list element
       var listEl = this.list.$el
       // Reset the list height
