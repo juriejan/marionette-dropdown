@@ -193,7 +193,7 @@
       hideList: function hideList() {
         var _this3 = this;
 
-        if (!this.hiding) {
+        if (!this.hiding && this.expanded || this.showing) {
           // Remove the item select handler after potential handling
           _.defer(function () {
             return _this3.stopListening(_this3.list, 'select', _this3.onItemSelect);

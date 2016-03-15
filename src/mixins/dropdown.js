@@ -138,7 +138,7 @@ export default {
     }
   },
   hideList: function () {
-    if (!this.hiding) {
+    if ((!this.hiding && this.expanded) || this.showing) {
       // Remove the item select handler after potential handling
       _.defer(() => this.stopListening(this.list, 'select', this.onItemSelect))
       // Shrink and hide the element
