@@ -95,7 +95,6 @@ export default {
       // Reset the list width
       this.resetListWidth()
       // Move the list element to the indicated overlay
-      console.log(this.getOverlay())
       this.getOverlay().append(this.list.$el)
       // Get the list element
       var listEl = this.list.$el
