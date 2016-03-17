@@ -118,7 +118,7 @@ export default Marionette.LayoutView.extend({
     var oldText = el.text()
     var minWidth = 0
     el.css({visibility: 'hidden'})
-    this.collection.each(function (model) {
+    this.collection.each((model) => {
       el.text(model.get('text'))
       if (el.width() > minWidth) {
         minWidth = el.width()

@@ -5,9 +5,6 @@ import _ from 'lodash'
 import animation from 'animation'
 
 export default {
-  regions: {
-    list: 'div.dropdown-list'
-  },
   events: {
     keydown: 'onKeyDown'
   },
@@ -52,7 +49,9 @@ export default {
     }
   },
   resetListWidth: function () {
-    this.list.$el.outerWidth(this.$el.outerWidth())
+    if (this.list && this.list.$el) {
+      this.list.$el.outerWidth(this.$el.outerWidth())
+    }
   },
   positionList: function () {
     var listEl = this.list.$el

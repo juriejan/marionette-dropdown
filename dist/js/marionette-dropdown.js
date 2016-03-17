@@ -50,9 +50,6 @@
     });
 
     var DropdownMixin = {
-      regions: {
-        list: 'div.dropdown-list'
-      },
       events: {
         keydown: 'onKeyDown'
       },
@@ -99,7 +96,9 @@
         }
       },
       resetListWidth: function resetListWidth() {
-        this.list.$el.outerWidth(this.$el.outerWidth());
+        if (this.list && this.list.$el) {
+          this.list.$el.outerWidth(this.$el.outerWidth());
+        }
       },
       positionList: function positionList() {
         var listEl = this.list.$el;
