@@ -83,7 +83,7 @@
         this.scrollParent.off('scroll', this.onParentScrollFunc);
       },
       onKeyDown: function onKeyDown(e) {
-        if (this.list.onKeyDown) this.list.onKeyDown(e);
+        if (this.list && this.list.onKeyDown) this.list.onKeyDown(e);
       },
       serializeData: function serializeData() {
         return { name: this.name };
