@@ -91,18 +91,6 @@
       serializeData: function serializeData() {
         return { name: this.name };
       },
-      setSelection: function setSelection(id) {
-        var _this = this;
-
-        this.list.children.each(function (child) {
-          if (child.model.id === id) {
-            _this.onItemSelect(child);
-          }
-        });
-      },
-      getSelection: function getSelection() {
-        return this.selected;
-      },
       toggleList: function toggleList() {
         if (this.expanded) {
           this.hideList();
@@ -126,7 +114,7 @@
         listEl.css('left', elOffset.left);
       },
       showList: function showList() {
-        var _this2 = this;
+        var _this = this;
 
         if (!this.showing && !this.hiding && !this.collection.isEmpty()) {
           // Create the lost view
@@ -168,21 +156,21 @@
           this.scrollParent.on('scroll', this.onParentScrollFunc);
           // Attach to event for hiding the list on click (skip current)
           _.defer(function () {
-            _this2.hideListFunc = _.bind(_this2.hideList, _this2, null);
-            $(window).one('click', _this2.hideListFunc);
-            _this2.scrollParent.one('scroll', _this2.hideListFunc);
+            _this.hideListFunc = _.bind(_this.hideList, _this, null);
+            $(window).one('click', _this.hideListFunc);
+            _this.scrollParent.one('scroll', _this.hideListFunc);
           });
           // Expand and show the list
           this.showing = true;
           return animation.grow(listEl, 'height', listHeight).then(function () {
-            _this2.showing = false;
-            _this2.expanded = true;
-            _this2.list.refreshScroll();
+            _this.showing = false;
+            _this.expanded = true;
+            _this.list.refreshScroll();
             // Listen to select events
-            _this2.listenTo(_this2.list, 'select', _this2.onItemSelect);
+            _this.listenTo(_this.list, 'select', _this.onItemSelect);
             // Trigger freeze on parent if available
-            if (_this2.parent) {
-              _this2.parent.trigger('freeze');
+            if (_this.parent) {
+              _this.parent.trigger('freeze');
             }
           });
         } else {
@@ -190,29 +178,29 @@
         }
       },
       hideList: function hideList() {
-        var _this3 = this;
+        var _this2 = this;
 
         if (!this.hiding && this.expanded || this.showing) {
           // Remove the item select handler after potential handling
           _.defer(function () {
-            return _this3.stopListening(_this3.list, 'select', _this3.onItemSelect);
+            return _this2.stopListening(_this2.list, 'select', _this2.onItemSelect);
           });
           // Shrink and hide the element
           this.hiding = true;
           return animation.shrink(this.list.$el, 'height').then(function () {
-            _this3.hiding = false;
-            _this3.expanded = false;
+            _this2.hiding = false;
+            _this2.expanded = false;
             // Destory the list
-            _this3.list.destroy();
+            _this2.list.destroy();
             // Detach from the scroll and hiding events
-            $(window).off('click', _this3.hideListFunc);
-            _this3.scrollParent.off('scroll', _this3.onParentScrollFunc);
-            _this3.scrollParent.off('scroll', _this3.hideListFunc);
+            $(window).off('click', _this2.hideListFunc);
+            _this2.scrollParent.off('scroll', _this2.onParentScrollFunc);
+            _this2.scrollParent.off('scroll', _this2.hideListFunc);
             // Trigger the hidden event
-            _this3.trigger('hidden');
+            _this2.trigger('hidden');
             // Trigger freeze on parent if available
-            if (_this3.parent) {
-              _this3.parent.trigger('thaw');
+            if (_this2.parent) {
+              _this2.parent.trigger('thaw');
             }
           });
         } else {
@@ -335,6 +323,9 @@
           return !(o.get('visible') === false);
         });
         return _.first(visible);
+      },
+      getSelected: function getSelected() {
+        return this.selected;
       },
       determineState: function determineState() {
         this.disabled = this.collection.size() === 0;

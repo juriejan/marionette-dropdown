@@ -77,6 +77,9 @@ export default Marionette.LayoutView.extend({
     })
     return _.first(visible)
   },
+  getSelected: function () {
+    return this.selected
+  },
   determineState: function () {
     this.disabled = (this.collection.size() === 0)
     if (this.disabled) {

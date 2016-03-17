@@ -44,9 +44,6 @@ export default {
   serializeData: function () {
     return {name: this.name}
   },
-  getSelection: function () {
-    return this.selected
-  },
   toggleList: function () {
     if (this.expanded) {
       this.hideList()
