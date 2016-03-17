@@ -44,13 +44,6 @@ export default {
   serializeData: function () {
     return {name: this.name}
   },
-  setSelection: function (id) {
-    this.list.children.each((child) => {
-      if (child.model.id === id) {
-        this.onItemSelect(child)
-      }
-    })
-  },
   getSelection: function () {
     return this.selected
   },
