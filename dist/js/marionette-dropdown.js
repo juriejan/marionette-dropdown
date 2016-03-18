@@ -95,9 +95,13 @@
           this.showList();
         }
       },
-      resetListWidth: function resetListWidth() {
+      resetListWidth: function resetListWidth(width) {
         if (this.list && this.list.$el) {
-          this.list.$el.outerWidth(this.$el.outerWidth());
+          if (this.resizeListToControl) {
+            this.list.$el.outerWidth(this.$el.outerWidth());
+          } else {
+            this.list.$el.outerWidth(this.getListWidth());
+          }
         }
       },
       positionList: function positionList() {
@@ -260,6 +264,7 @@
     var DropdownView = Marionette.LayoutView.extend({
       mixins: [DropdownMixin],
       template: templates['dropdown'],
+      resizeListToControl: true,
       focusListView: DropdownFocusListView,
       dropdownItemView: ItemView,
       attributes: {
@@ -326,6 +331,19 @@
       getSelected: function getSelected() {
         return this.selected;
       },
+      getListWidth: function getListWidth() {
+        var el = this.ui.text;
+        var text = el.text();
+        var width = 0;
+        el.css({ visibility: 'hidden' });
+        this.collection.each(function (model) {
+          el.text(model.get('text'));
+          if (el.width() > width) width = el.width();
+        });
+        el.html(text);
+        el.css('visibility', '');
+        return width;
+      },
       determineState: function determineState() {
         this.disabled = this.collection.size() === 0;
         if (this.disabled) {
@@ -364,19 +382,8 @@
         }
       },
       refresh: function refresh() {
-        var el = this.ui.text;
-        var oldText = el.text();
-        var minWidth = 0;
-        el.css({ visibility: 'hidden' });
-        this.collection.each(function (model) {
-          el.text(model.get('text'));
-          if (el.width() > minWidth) {
-            minWidth = el.width();
-          }
-        });
-        el.css({ visibility: '', 'min-width': minWidth });
-        el.html(oldText);
-        this.resetListWidth();
+        this.ui.text.css('min-width', this.getListWidth());
+        // this.resetListWidth()
       },
       setVisibleOptions: function setVisibleOptions(visible) {
         // Set the visibility of each model in the collection

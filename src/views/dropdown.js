@@ -18,6 +18,7 @@ const DropdownFocusListView = FocusListView.extend({
 export default Marionette.LayoutView.extend({
   mixins: [DropdownMixin],
   template: templates['dropdown'],
+  resizeListToControl: true,
   focusListView: DropdownFocusListView,
   dropdownItemView: ItemView,
   attributes: {
@@ -80,6 +81,19 @@ export default Marionette.LayoutView.extend({
   getSelected: function () {
     return this.selected
   },
+  getListWidth: function () {
+    var el = this.ui.text
+    var text = el.text()
+    var width = 0
+    el.css({visibility: 'hidden'})
+    this.collection.each((model) => {
+      el.text(model.get('text'))
+      if (el.width() > width) width = el.width()
+    })
+    el.html(text)
+    el.css('visibility', '')
+    return width
+  },
   determineState: function () {
     this.disabled = (this.collection.size() === 0)
     if (this.disabled) {
@@ -114,19 +128,8 @@ export default Marionette.LayoutView.extend({
     }
   },
   refresh: function () {
-    var el = this.ui.text
-    var oldText = el.text()
-    var minWidth = 0
-    el.css({visibility: 'hidden'})
-    this.collection.each((model) => {
-      el.text(model.get('text'))
-      if (el.width() > minWidth) {
-        minWidth = el.width()
-      }
-    })
-    el.css({visibility: '', 'min-width': minWidth})
-    el.html(oldText)
-    this.resetListWidth()
+    this.ui.text.css('min-width', this.getListWidth())
+    // this.resetListWidth()
   },
   setVisibleOptions: function (visible) {
     // Set the visibility of each model in the collection

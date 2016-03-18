@@ -48,9 +48,13 @@ export default {
       this.showList()
     }
   },
-  resetListWidth: function () {
+  resetListWidth: function (width) {
     if (this.list && this.list.$el) {
-      this.list.$el.outerWidth(this.$el.outerWidth())
+      if (this.resizeListToControl) {
+        this.list.$el.outerWidth(this.$el.outerWidth())
+      } else {
+        this.list.$el.outerWidth(this.getListWidth())
+      }
     }
   },
   positionList: function () {
