@@ -18,7 +18,6 @@ const DropdownFocusListView = FocusListView.extend({
 export default Marionette.LayoutView.extend({
   mixins: [DropdownMixin],
   template: templates['dropdown'],
-  resizeListToControl: true,
   focusListView: DropdownFocusListView,
   dropdownItemView: ItemView,
   attributes: {
@@ -34,7 +33,6 @@ export default Marionette.LayoutView.extend({
     'click @ui.button': 'onButtonClick'
   },
   initialize: function (options) {
-    this.sizeToContents = utils.defined(options.sizeToContents, true)
     this.listenTo(this, 'dropdown:show', this.onDropdownShow)
     utils.loadingEvents(this, this.collection)
     utils.loadingActions(this, true)
@@ -49,9 +47,6 @@ export default Marionette.LayoutView.extend({
   onRender: function () {
     this.determineState()
     this.listenTo(this.collection, 'reset', this.determineState)
-    if (this.sizeToContents) {
-      this.listenTo(this.collection, 'reset', this.refresh)
-    }
   },
   onShow: function () {
     if (this.selected) { this.select(this.selected, true) }
@@ -129,7 +124,6 @@ export default Marionette.LayoutView.extend({
   },
   refresh: function () {
     this.ui.text.css('min-width', this.getListWidth())
-    // this.resetListWidth()
   },
   setVisibleOptions: function (visible) {
     // Set the visibility of each model in the collection

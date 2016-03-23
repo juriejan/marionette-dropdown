@@ -50,11 +50,9 @@ export default {
   },
   resetListWidth: function (width) {
     if (this.list && this.list.$el) {
-      if (this.resizeListToControl) {
-        this.list.$el.outerWidth(this.$el.outerWidth())
-      } else {
-        this.list.$el.outerWidth(this.getListWidth())
-      }
+      var listWidth = this.getListWidth()
+      var elWidth = this.$el.outerWidth()
+      this.list.$el.outerWidth(_.max([listWidth, elWidth]))
     }
   },
   positionList: function () {

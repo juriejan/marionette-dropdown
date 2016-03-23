@@ -97,11 +97,9 @@
       },
       resetListWidth: function resetListWidth(width) {
         if (this.list && this.list.$el) {
-          if (this.resizeListToControl) {
-            this.list.$el.outerWidth(this.$el.outerWidth());
-          } else {
-            this.list.$el.outerWidth(this.getListWidth());
-          }
+          var listWidth = this.getListWidth();
+          var elWidth = this.$el.outerWidth();
+          this.list.$el.outerWidth(_.max([listWidth, elWidth]));
         }
       },
       positionList: function positionList() {
@@ -264,7 +262,6 @@
     var DropdownView = Marionette.LayoutView.extend({
       mixins: [DropdownMixin],
       template: templates['dropdown'],
-      resizeListToControl: true,
       focusListView: DropdownFocusListView,
       dropdownItemView: ItemView,
       attributes: {
@@ -280,7 +277,6 @@
         'click @ui.button': 'onButtonClick'
       },
       initialize: function initialize(options) {
-        this.sizeToContents = utils.defined(options.sizeToContents, true);
         this.listenTo(this, 'dropdown:show', this.onDropdownShow);
         utils.loadingEvents(this, this.collection);
         utils.loadingActions(this, true);
@@ -297,9 +293,6 @@
       onRender: function onRender() {
         this.determineState();
         this.listenTo(this.collection, 'reset', this.determineState);
-        if (this.sizeToContents) {
-          this.listenTo(this.collection, 'reset', this.refresh);
-        }
       },
       onShow: function onShow() {
         if (this.selected) {
@@ -383,7 +376,6 @@
       },
       refresh: function refresh() {
         this.ui.text.css('min-width', this.getListWidth());
-        // this.resetListWidth()
       },
       setVisibleOptions: function setVisibleOptions(visible) {
         // Set the visibility of each model in the collection
