@@ -1,6 +1,8 @@
 
 import _ from 'lodash'
 
+import loading from './loading'
+
 function defined () {
   return _.find(arguments, function (o) {
     return (o !== undefined)
@@ -19,14 +21,10 @@ function loadingEvents (receiver, sender) {
   transfer(sender, receiver, 'loaded')
 }
 
-function loadingActions (view, inside) {
-  view.listenTo(view, 'loading', function () {
-    view.$el.loading(true, inside)
-  })
-  view.listenTo(view, 'loaded', function () {
-    view.$el.loading(false, inside)
-  })
-};
+function loadingActions (view) {
+  view.listenTo(view, 'loading', () => { loading(view.$el, true) })
+  view.listenTo(view, 'loaded', () => { loading(view.$el, false) })
+}
 
 export default {
   defined,
