@@ -77,8 +77,6 @@ export default {
         childView: this.dropdownItemView,
         collection: this.collection
       })
-      // Flatten the list element
-      animation.flat(this.list.$el)
       // Prevent list from automatically rendering on collection reset
       this.list.stopListening(this.collection, 'reset')
       // Render the list before showing
@@ -94,6 +92,8 @@ export default {
       // Reset the list height
       this.list.resetHeight()
       var listHeight = listEl.height()
+      // Flatten the list element
+      animation.flat(this.list.$el)
       // Decide which way to expand the list
       var elOffset = this.$el.offset()
       var windowHeight = $(window).height()
