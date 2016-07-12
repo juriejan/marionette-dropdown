@@ -422,6 +422,7 @@
 
     var index = {
       DropdownView: DropdownView,
+      DropdownItemView: ItemView,
       DropdownMixin: DropdownMixin
     };
 
