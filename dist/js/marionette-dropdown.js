@@ -118,7 +118,9 @@
         var _this = this;
 
         if (!this.showing && !this.hiding && !this.collection.isEmpty()) {
-          // Create the lost view
+          // Add the class indicating open status
+          this.$el.addClass('open');
+          // Create the list view
           this.list = new this.focusListView({
             maxSize: this.maxSize,
             childView: this.dropdownItemView,
@@ -182,6 +184,8 @@
         var _this2 = this;
 
         if (!this.hiding && this.expanded || this.showing) {
+          // Remove the class indicating open status
+          this.$el.removeClass('open');
           // Remove the item select handler after potential handling
           _.defer(function () {
             return _this2.stopListening(_this2.list, 'select', _this2.onItemSelect);

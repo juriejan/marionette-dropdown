@@ -69,7 +69,9 @@ export default {
   },
   showList: function () {
     if (!this.showing && !this.hiding && !this.collection.isEmpty()) {
-      // Create the lost view
+      // Add the class indicating open status
+      this.$el.addClass('open')
+      // Create the list view
       this.list = new this.focusListView({
         maxSize: this.maxSize,
         childView: this.dropdownItemView,
@@ -129,6 +131,8 @@ export default {
   },
   hideList: function () {
     if ((!this.hiding && this.expanded) || this.showing) {
+      // Remove the class indicating open status
+      this.$el.removeClass('open')
       // Remove the item select handler after potential handling
       _.defer(() => this.stopListening(this.list, 'select', this.onItemSelect))
       // Shrink and hide the element
