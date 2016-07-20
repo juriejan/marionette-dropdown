@@ -129,6 +129,8 @@
             childView: this.dropdownItemView,
             collection: this.collection
           });
+          // Attach to the list close event
+          this.list.listenTo(this.list, 'close', this.hideList.bind(this));
           // Prevent list from automatically rendering on collection reset
           this.list.stopListening(this.collection, 'reset');
           // Render the list before showing
