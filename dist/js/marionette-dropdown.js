@@ -50,6 +50,9 @@
     });
 
     var DropdownMixin = {
+      attributes: {
+        tabIndex: 0
+      },
       events: {
         keydown: 'onKeyDown'
       },
@@ -140,7 +143,7 @@
           var listEl = this.list.$el;
           // Reset the list height
           this.list.resetHeight();
-          var listHeight = listEl.height();
+          var listHeight = parseInt(listEl.css('height'), 10);
           // Flatten the list element
           animation.flat(this.list.$el);
           // Decide which way to expand the list
