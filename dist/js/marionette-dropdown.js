@@ -57,7 +57,8 @@
         keydown: 'onKeyDown'
       },
       initialize: function initialize(options) {
-        this.maxSize = options.maxSize;
+        this.maxSize = this.maxSize || options.maxSize;
+        this.placeholder = this.placeholder || options.placeholder;
         this.expanded = false;
         this.showing = false;
         this.hiding = false;
@@ -89,7 +90,10 @@
         if (this.list && this.list.onKeyDown) this.list.onKeyDown(e);
       },
       serializeData: function serializeData() {
-        return { name: this.name };
+        return {
+          name: this.name,
+          placeholder: this.placeholder
+        };
       },
       toggleList: function toggleList() {
         if (this.expanded) {

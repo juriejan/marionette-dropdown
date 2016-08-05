@@ -12,7 +12,8 @@ export default {
     keydown: 'onKeyDown'
   },
   initialize: function (options) {
-    this.maxSize = options.maxSize
+    this.maxSize = this.maxSize || options.maxSize
+    this.placeholder = this.placeholder || options.placeholder
     this.expanded = false
     this.showing = false
     this.hiding = false
@@ -42,7 +43,10 @@ export default {
     if (this.list && this.list.onKeyDown) this.list.onKeyDown(e)
   },
   serializeData: function () {
-    return {name: this.name}
+    return {
+      name: this.name,
+      placeholder: this.placeholder
+    }
   },
   toggleList: function () {
     if (this.expanded) {
