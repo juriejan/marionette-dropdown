@@ -32,7 +32,8 @@ export default {
     this.scrollParent = this.$el.closest('.nano-content')
   },
   onParentScroll: function (e) {
-    this.positionList()
+    let listHeight = parseInt(this.list.$el.css('height'), 10)
+    this.positionList(listHeight)
   },
   onDestroy: function () {
     $(window).off('click', this.hideListFunc)
@@ -57,25 +58,30 @@ export default {
   },
   resetListWidth: function (width) {
     if (this.list && this.list.$el) {
-      var listWidth = this.getListWidth()
-      var elWidth = this.$el.outerWidth()
+      let listWidth = this.getListWidth()
+      let elWidth = this.$el.outerWidth()
       this.list.$el.outerWidth(_.max([listWidth, elWidth]))
     }
   },
-  positionList: function () {
-    var listEl = this.list.$el
-    var windowHeight = $(window).height()
-    var windowWidth = $(window).width()
-    var elOffset = this.$el.offset()
-    var elHeight = this.$el.outerHeight()
-    var elWidth = this.$el.outerWidth()
-    console.log(elOffset.left, elWidth)
-    if (this.isExpandedToTop) {
+  positionList: function (listHeight) {
+    let listEl = this.list.$el
+    let windowHeight = $(window).height()
+    let windowWidth = $(window).width()
+    let elOffset = this.$el.offset()
+    let elHeight = this.$el.outerHeight()
+    let elWidth = this.$el.outerWidth()
+    let listWidth = this.list.$el.outerWidth()
+    let potentialTop = elOffset.top - listHeight
+    let potentialBottom = elOffset.top + elHeight + listHeight
+    let potentialRight = elOffset.left + listWidth
+    let expandedToLeft = (potentialRight > windowWidth)
+    let expandedToTop = (potentialBottom > windowHeight) && (potentialTop > 0)
+    if (expandedToTop) {
       listEl.css({top: '', bottom: (windowHeight - elOffset.top)})
     } else {
       listEl.css({top: (elOffset.top + elHeight), bottom: ''})
     }
-    if (this.isExpandedToLeft) {
+    if (expandedToLeft) {
       listEl.css({right: (windowWidth - (elOffset.left + elWidth))})
     } else {
       listEl.css({left: elOffset.left})
@@ -104,25 +110,14 @@ export default {
       // Move the list element to the indicated overlay
       this.getOverlay().append(this.list.$el)
       // Get the list element
-      var listEl = this.list.$el
+      let listEl = this.list.$el
       // Reset the list height
       this.list.resetHeight()
-      var listHeight = parseInt(listEl.css('height'), 10)
+      let listHeight = parseInt(listEl.css('height'), 10)
       // Flatten the list element
-      animation.flat(this.list.$el)
-      // Decide which way to expand the list
-      var elOffset = this.$el.offset()
-      var windowHeight = $(window).height()
-      var windowWidth = $(window).width()
-      var elHeight = this.$el.outerHeight()
-      var listWidth = this.list.$el.outerWidth()
-      var potentialTop = elOffset.top - listHeight
-      var potentialBottom = elOffset.top + elHeight + listHeight
-      var potentialRight = elOffset.left + listWidth
-      this.isExpandedToLeft = (potentialRight > windowWidth)
-      this.isExpandedToTop = (potentialBottom > windowHeight) && (potentialTop > 0)
+      animation.flat(listEl)
       // Position the list before animation
-      this.positionList()
+      this.positionList(listHeight)
       // Trigger the dropdown show event
       this.trigger('dropdown:show')
       // Attach to event for hiding and scrolling the list on scroll

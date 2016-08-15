@@ -79,7 +79,8 @@
         this.scrollParent = this.$el.closest('.nano-content');
       },
       onParentScroll: function onParentScroll(e) {
-        this.positionList();
+        var listHeight = parseInt(this.list.$el.css('height'), 10);
+        this.positionList(listHeight);
       },
       onDestroy: function onDestroy() {
         $(window).off('click', this.hideListFunc);
@@ -109,20 +110,25 @@
           this.list.$el.outerWidth(_.max([listWidth, elWidth]));
         }
       },
-      positionList: function positionList() {
+      positionList: function positionList(listHeight) {
         var listEl = this.list.$el;
         var windowHeight = $(window).height();
         var windowWidth = $(window).width();
         var elOffset = this.$el.offset();
         var elHeight = this.$el.outerHeight();
         var elWidth = this.$el.outerWidth();
-        console.log(elOffset.left, elWidth);
-        if (this.isExpandedToTop) {
+        var listWidth = this.list.$el.outerWidth();
+        var potentialTop = elOffset.top - listHeight;
+        var potentialBottom = elOffset.top + elHeight + listHeight;
+        var potentialRight = elOffset.left + listWidth;
+        var expandedToLeft = potentialRight > windowWidth;
+        var expandedToTop = potentialBottom > windowHeight && potentialTop > 0;
+        if (expandedToTop) {
           listEl.css({ top: '', bottom: windowHeight - elOffset.top });
         } else {
           listEl.css({ top: elOffset.top + elHeight, bottom: '' });
         }
-        if (this.isExpandedToLeft) {
+        if (expandedToLeft) {
           listEl.css({ right: windowWidth - (elOffset.left + elWidth) });
         } else {
           listEl.css({ left: elOffset.left });
@@ -158,20 +164,9 @@
           this.list.resetHeight();
           var listHeight = parseInt(listEl.css('height'), 10);
           // Flatten the list element
-          animation.flat(this.list.$el);
-          // Decide which way to expand the list
-          var elOffset = this.$el.offset();
-          var windowHeight = $(window).height();
-          var windowWidth = $(window).width();
-          var elHeight = this.$el.outerHeight();
-          var listWidth = this.list.$el.outerWidth();
-          var potentialTop = elOffset.top - listHeight;
-          var potentialBottom = elOffset.top + elHeight + listHeight;
-          var potentialRight = elOffset.left + listWidth;
-          this.isExpandedToLeft = potentialRight > windowWidth;
-          this.isExpandedToTop = potentialBottom > windowHeight && potentialTop > 0;
+          animation.flat(listEl);
           // Position the list before animation
-          this.positionList();
+          this.positionList(listHeight);
           // Trigger the dropdown show event
           this.trigger('dropdown:show');
           // Attach to event for hiding and scrolling the list on scroll
