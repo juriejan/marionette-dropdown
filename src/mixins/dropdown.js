@@ -65,14 +65,21 @@ export default {
   positionList: function () {
     var listEl = this.list.$el
     var windowHeight = $(window).height()
+    var windowWidth = $(window).width()
     var elOffset = this.$el.offset()
     var elHeight = this.$el.outerHeight()
+    var elWidth = this.$el.outerWidth()
+    console.log(elOffset.left, elWidth)
     if (this.isExpandedToTop) {
       listEl.css({top: '', bottom: (windowHeight - elOffset.top)})
     } else {
       listEl.css({top: (elOffset.top + elHeight), bottom: ''})
     }
-    listEl.css('left', elOffset.left)
+    if (this.isExpandedToLeft) {
+      listEl.css({right: (windowWidth - (elOffset.left + elWidth))})
+    } else {
+      listEl.css({left: elOffset.left})
+    }
   },
   showList: function () {
     if (!this.showing && !this.hiding && !this.collection.isEmpty()) {
@@ -106,9 +113,13 @@ export default {
       // Decide which way to expand the list
       var elOffset = this.$el.offset()
       var windowHeight = $(window).height()
+      var windowWidth = $(window).width()
       var elHeight = this.$el.outerHeight()
+      var listWidth = this.list.$el.outerWidth()
       var potentialTop = elOffset.top - listHeight
       var potentialBottom = elOffset.top + elHeight + listHeight
+      var potentialRight = elOffset.left + listWidth
+      this.isExpandedToLeft = (potentialRight > windowWidth)
       this.isExpandedToTop = (potentialBottom > windowHeight) && (potentialTop > 0)
       // Position the list before animation
       this.positionList()
