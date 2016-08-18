@@ -91,6 +91,8 @@ export default {
     if (!this.showing && !this.hiding && !this.collection.isEmpty()) {
       // Add the class indicating open status
       this.$el.addClass('open')
+      // Raise the element to maintain visiblity
+      this.$el.css('z-index', 2)
       // Create the list view
       this.list = new this.focusListView({
         maxSize: this.maxSize,
@@ -155,6 +157,8 @@ export default {
       return animation.shrink(this.list.$el, 'height').then(() => {
         this.hiding = false
         this.expanded = false
+        // Return the element to it's original level
+        this.$el.css('z-index', '')
         // Destory the list
         this.list.destroy()
         // Detach from the scroll and hiding events
