@@ -1,5 +1,5 @@
 {
-  "plugins": "standard",
+  "plugins": ["standard"],
   "extends": "standard",
   "parser": "babel-eslint",
   "rules": {
