@@ -5,8 +5,8 @@ import _ from 'lodash'
 import animation from 'animation'
 
 export default {
-  attributes: {
-    tabIndex: 0
+  attributes: function () {
+    return {tabIndex: 0}
   },
   events: {
     keydown: 'onKeyDown'

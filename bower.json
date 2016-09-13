@@ -45,7 +45,7 @@
     "animation": "juriejan/animation",
     "backbone.marionette": "~2.4.4",
     "backbone": "~1.2.3",
-    "cocktail": "~0.5.11",
+    "cocktail": "juriejan/cocktail#extend-collision-return",
     "handlebars": "~4.0.5",
     "jquery": "~2.2.0",
     "lodash": "~4.0.0",
