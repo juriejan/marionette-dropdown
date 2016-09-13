@@ -50,8 +50,8 @@
     });
 
     var DropdownMixin = {
-      attributes: {
-        tabIndex: 0
+      attributes: function attributes() {
+        return { tabIndex: 0 };
       },
       events: {
         keydown: 'onKeyDown'
