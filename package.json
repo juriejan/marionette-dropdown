@@ -13,8 +13,8 @@
   },
   "homepage": "https://github.com/juriejan/marionette-dropdown#readme",
   "engines": {
-    "node": ">=5.4.0",
-    "npm": ">=3.3.12"
+    "node": ">=6.3.1",
+    "npm": ">=3.10.3"
   },
   "main": "dist/js/marionette-dropdown.js",
   "scripts": {
