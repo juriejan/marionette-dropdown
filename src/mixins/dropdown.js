@@ -27,8 +27,6 @@ export default {
   },
   onRender: function () {
     if (this.expanded) { this.list.$el.css({opacity: 1}) }
-  },
-  onBeforeShow: function () {
     this.scrollParent = this.$el.closest('.nano-content')
   },
   onParentScroll: function (e) {

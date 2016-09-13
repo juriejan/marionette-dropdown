@@ -74,8 +74,6 @@
         if (this.expanded) {
           this.list.$el.css({ opacity: 1 });
         }
-      },
-      onBeforeShow: function onBeforeShow() {
         this.scrollParent = this.$el.closest('.nano-content');
       },
       onParentScroll: function onParentScroll(e) {
