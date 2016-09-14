@@ -96,8 +96,13 @@ export default Marionette.LayoutView.extend({
       this.select(null)
     } else {
       this.$el.removeClass('disabled')
-      let id = this.ui.input.val() || (this.selected && this.selected.id)
-      this.select(this.collection.get(id) || this.getFirst())
+      if (this.selectedId) {
+        this.select(this.collection.get(this.selectedId))
+        this.selectedId = null
+      } else {
+        let id = this.ui.input.val() || (this.selected && this.selected.id)
+        this.select(this.collection.get(id) || this.getFirst())
+      }
     }
   },
   select: function (model, trigger) {
@@ -119,6 +124,8 @@ export default Marionette.LayoutView.extend({
     if (id === undefined || id === null || _.size(id) === 0) {
       this.select(this.getFirst(), trigger)
     } else {
+      let item = this.collection.get(id)
+      if (!item) this.selectedId = id
       this.select(this.collection.get(id), trigger)
     }
   },
