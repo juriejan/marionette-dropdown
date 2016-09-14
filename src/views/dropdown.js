@@ -125,8 +125,11 @@ export default Marionette.LayoutView.extend({
       this.select(this.getFirst(), trigger)
     } else {
       let item = this.collection.get(id)
-      if (!item) this.selectedId = id
-      this.select(this.collection.get(id), trigger)
+      if (!item) {
+        this.selectedId = id
+      } else {
+        this.select(this.collection.get(id), trigger)
+      }
     }
   },
   refresh: function () {

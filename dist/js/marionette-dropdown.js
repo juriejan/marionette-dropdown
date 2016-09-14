@@ -421,8 +421,11 @@
           this.select(this.getFirst(), trigger);
         } else {
           var item = this.collection.get(id);
-          if (!item) this.selectedId = id;
-          this.select(this.collection.get(id), trigger);
+          if (!item) {
+            this.selectedId = id;
+          } else {
+            this.select(this.collection.get(id), trigger);
+          }
         }
       },
       refresh: function refresh() {
