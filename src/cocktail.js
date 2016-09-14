@@ -5,11 +5,11 @@ import Backbone from 'backbone'
 import Marionette from 'marionette'
 import Cocktail from 'cocktail'
 
-var originalExtend = Backbone.Model.extend
+let originalExtend = Backbone.Model.extend
 
-var extend = function (protoProps, classProps) {
-  var klass = originalExtend.call(this, protoProps, classProps)
-  var mixins = klass.prototype.mixins
+let extend = function (protoProps, classProps) {
+  let klass = originalExtend.call(this, protoProps, classProps)
+  let mixins = klass.prototype.mixins
   if (mixins && klass.prototype.hasOwnProperty('mixins')) {
     Cocktail.mixin(klass, mixins)
   }

@@ -40,7 +40,7 @@ export default Marionette.LayoutView.extend({
   onDropdownShow: function () {
     // Indicate currently selected item with focus
     if (this.selected) {
-      var child = this.list.children.findByModel(this.selected)
+      let child = this.list.children.findByModel(this.selected)
       if (child) { child.$el.addClass('focus') }
     }
   },
@@ -52,7 +52,7 @@ export default Marionette.LayoutView.extend({
     if (this.selected) { this.select(this.selected, true) }
   },
   onInputChange: function () {
-    var value = this.ui.input.val()
+    let value = this.ui.input.val()
     this.selectId(value)
   },
   onButtonClick: function (e) {
@@ -68,7 +68,7 @@ export default Marionette.LayoutView.extend({
     return $('body')
   },
   getFirst: function () {
-    var visible = this.collection.filter(function (o) {
+    let visible = this.collection.filter(function (o) {
       return !(o.get('visible') === false)
     })
     return _.first(visible)
@@ -77,9 +77,9 @@ export default Marionette.LayoutView.extend({
     return this.selected
   },
   getListWidth: function () {
-    var el = this.ui.text
-    var text = el.text()
-    var width = 0
+    let el = this.ui.text
+    let text = el.text()
+    let width = 0
     el.css({visibility: 'hidden'})
     this.collection.each((model) => {
       el.text(model.get('text'))
@@ -96,12 +96,12 @@ export default Marionette.LayoutView.extend({
       this.select(null)
     } else {
       this.$el.removeClass('disabled')
-      var id = this.ui.input.val() || (this.selected && this.selected.id)
+      let id = this.ui.input.val() || (this.selected && this.selected.id)
       this.select(this.collection.get(id) || this.getFirst())
     }
   },
   select: function (model, trigger) {
-    var changed = !(this.selected === model)
+    let changed = !(this.selected === model)
     this.selected = model
     if (this.isRendered) {
       if (this.selected) {

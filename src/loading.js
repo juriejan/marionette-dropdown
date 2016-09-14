@@ -6,7 +6,7 @@ import templates from './templates'
 const spinnerHtml = templates['spinner']({})
 
 function add (el) {
-  var loadingEl = $('<div class="loading"></div>')
+  let loadingEl = $('<div class="loading"></div>')
   loadingEl.append(spinnerHtml)
   el.append(loadingEl)
 }

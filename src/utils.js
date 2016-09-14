@@ -11,7 +11,7 @@ function defined () {
 
 function transfer (sender, receiver, eventName) {
   sender.listenTo(sender, eventName, function () {
-    var args = _([eventName]).concat(arguments).value()
+    let args = _([eventName]).concat(arguments).value()
     receiver.trigger.apply(receiver, args)
   })
 }
