@@ -362,6 +362,8 @@
           if (focusedView !== undefined) {
             this.list.trigger('select', focusedView);
           }
+        } else {
+          this.hideList();
         }
       },
       onItemSelect: function onItemSelect(child) {

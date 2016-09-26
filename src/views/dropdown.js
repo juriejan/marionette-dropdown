@@ -73,6 +73,8 @@ export default Marionette.LayoutView.extend({
       if (focusedView !== undefined) {
         this.list.trigger('select', focusedView)
       }
+    } else {
+      this.hideList()
     }
   },
   onItemSelect: function (child) {
