@@ -50,9 +50,6 @@
     });
 
     var DropdownMixin = {
-      attributes: function attributes() {
-        return { tabIndex: 0 };
-      },
       events: {
         keydown: 'onKeyDown'
       },
@@ -318,7 +315,9 @@
       },
       events: {
         'change @ui.input': 'onInputChange',
-        'click @ui.button': 'onButtonClick'
+        'click @ui.button': 'onButtonClick',
+        'focus @ui.button': 'onButtonFocus',
+        'blur @ui.button': 'onButtonBlur'
       },
       initialize: function initialize(options) {
         this.listenTo(this, 'dropdown:show', this.onDropdownShow);
@@ -350,6 +349,21 @@
       onButtonClick: function onButtonClick(e) {
         if (!this.expanded) {
           _.defer(this.showList.bind(this));
+        }
+      },
+      onButtonFocus: function onButtonFocus(e) {
+        if (!this.expanded) {
+          _.defer(this.showList.bind(this));
+        }
+      },
+      onButtonBlur: function onButtonBlur(e) {
+        if (this.expanded) {
+          var focusedView = this.list.findFocusedItem();
+          if (focusedView !== undefined) {
+            this.list.trigger('select', focusedView);
+          }
+        } else {
+          this.hideList();
         }
       },
       onItemSelect: function onItemSelect(child) {
@@ -385,9 +399,11 @@
         this.disabled = this.collection.size() === 0;
         if (this.disabled) {
           this.$el.addClass('disabled');
+          this.ui.button.attr('tabindex', -1);
           this.select(null);
         } else {
           this.$el.removeClass('disabled');
+          this.ui.button.attr('tabindex', 0);
           if (this.selectedId) {
             this.select(this.collection.get(this.selectedId));
             this.selectedId = null;
