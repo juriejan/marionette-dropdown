@@ -347,11 +347,15 @@
         this.selectId(value);
       },
       onButtonClick: function onButtonClick(e) {
+        e.stopPropagation();
+        e.preventDefault();
         if (!this.expanded) {
           _.defer(this.showList.bind(this));
         }
       },
       onButtonFocus: function onButtonFocus(e) {
+        e.stopPropagation();
+        e.preventDefault();
         if (!this.expanded) {
           _.defer(this.showList.bind(this));
         }

@@ -58,11 +58,15 @@ export default Marionette.LayoutView.extend({
     this.selectId(value)
   },
   onButtonClick: function (e) {
+    e.stopPropagation()
+    e.preventDefault()
     if (!this.expanded) {
       _.defer(this.showList.bind(this))
     }
   },
   onButtonFocus: function (e) {
+    e.stopPropagation()
+    e.preventDefault()
     if (!this.expanded) {
       _.defer(this.showList.bind(this))
     }
