@@ -30,7 +30,9 @@ export default Marionette.LayoutView.extend({
   },
   events: {
     'change @ui.input': 'onInputChange',
-    'click @ui.button': 'onButtonClick'
+    'click @ui.button': 'onButtonClick',
+    'focus @ui.button': 'onButtonFocus',
+    'blur @ui.button': 'onButtonBlur'
   },
   initialize: function (options) {
     this.listenTo(this, 'dropdown:show', this.onDropdownShow)
@@ -58,6 +60,21 @@ export default Marionette.LayoutView.extend({
   onButtonClick: function (e) {
     if (!this.expanded) {
       _.defer(this.showList.bind(this))
+    }
+  },
+  onButtonFocus: function (e) {
+    if (!this.expanded) {
+      _.defer(this.showList.bind(this))
+    }
+  },
+  onButtonBlur: function (e) {
+    if (this.expanded) {
+      let focusedView = this.list.findFocusedItem()
+      if (focusedView !== undefined) {
+        this.list.trigger('select', focusedView)
+      }
+    } else {
+      this.hideList()
     }
   },
   onItemSelect: function (child) {
@@ -93,9 +110,11 @@ export default Marionette.LayoutView.extend({
     this.disabled = (this.collection.size() === 0)
     if (this.disabled) {
       this.$el.addClass('disabled')
+      this.ui.button.attr('tabindex', -1)
       this.select(null)
     } else {
       this.$el.removeClass('disabled')
+      this.ui.button.attr('tabindex', 0)
       if (this.selectedId) {
         this.select(this.collection.get(this.selectedId))
         this.selectedId = null
