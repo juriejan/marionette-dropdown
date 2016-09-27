@@ -42,7 +42,7 @@ export default Marionette.LayoutView.extend({
   onDropdownShow: function () {
     // Indicate currently selected item with focus
     if (this.selected) {
-      let child = this.list.children.findByModel(this.selected)
+      let child = this.list.findByModel(this.selected)
       if (child) { child.$el.addClass('focus') }
     }
   },

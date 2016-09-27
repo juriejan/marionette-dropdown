@@ -327,7 +327,7 @@
       onDropdownShow: function onDropdownShow() {
         // Indicate currently selected item with focus
         if (this.selected) {
-          var child = this.list.children.findByModel(this.selected);
+          var child = this.list.findByModel(this.selected);
           if (child) {
             child.$el.addClass('focus');
           }
