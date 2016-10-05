@@ -111,7 +111,11 @@ export default Marionette.LayoutView.extend({
     return width
   },
   determineState: function () {
-    this.disabled = (this.collection.size() === 0)
+    if (this.allowEmpty === true || this.collection.size() > 0) {
+      this.disabled = false
+    } else if (this.collection.size() === 0) {
+      this.disabled = true
+    }
     if (this.disabled) {
       this.$el.addClass('disabled')
       this.ui.button.attr('tabindex', -1)
