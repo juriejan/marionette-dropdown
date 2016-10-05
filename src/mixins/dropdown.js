@@ -11,6 +11,7 @@ export default {
   initialize: function (options) {
     this.maxSize = this.maxSize || options.maxSize
     this.placeholder = this.placeholder || options.placeholder
+    this.allowEmpty = this.allowEmpty || options.allowEmpty
     this.expanded = false
     this.showing = false
     this.hiding = false
@@ -83,7 +84,8 @@ export default {
     }
   },
   showList: function () {
-    if (!this.showing && !this.hiding && !this.collection.isEmpty()) {
+    if (!this.showing && !this.hiding &&
+    (!this.collection.isEmpty() || this.allowEmpty)) {
       // Add the class indicating open status
       this.$el.addClass('open')
       // Raise the element to maintain visiblity

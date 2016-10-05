@@ -56,6 +56,7 @@
       initialize: function initialize(options) {
         this.maxSize = this.maxSize || options.maxSize;
         this.placeholder = this.placeholder || options.placeholder;
+        this.allowEmpty = this.allowEmpty || options.allowEmpty;
         this.expanded = false;
         this.showing = false;
         this.hiding = false;
@@ -132,7 +133,7 @@
       showList: function showList() {
         var _this = this;
 
-        if (!this.showing && !this.hiding && !this.collection.isEmpty()) {
+        if (!this.showing && !this.hiding && (!this.collection.isEmpty() || this.allowEmpty)) {
           // Add the class indicating open status
           this.$el.addClass('open');
           // Raise the element to maintain visiblity
@@ -400,7 +401,11 @@
         return width;
       },
       determineState: function determineState() {
-        this.disabled = this.collection.size() === 0;
+        if (this.allowEmpty === true || this.collection.size() > 0) {
+          this.disabled = false;
+        } else if (this.collection.size() === 0) {
+          this.disabled = true;
+        }
         if (this.disabled) {
           this.$el.addClass('disabled');
           this.ui.button.attr('tabindex', -1);
