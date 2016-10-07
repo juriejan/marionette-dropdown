@@ -52,12 +52,8 @@ export default {
       this.showList()
     }
   },
-  resetListWidth: function (width) {
-    if (this.list && this.list.$el) {
-      let listWidth = this.getListWidth()
-      let elWidth = this.$el.outerWidth()
-      this.list.$el.outerWidth(_.max([listWidth, elWidth]))
-    }
+  getListWidth: function () {
+    return this.options.listWidth || this.$el.outerWidth()
   },
   positionList: function (listHeight) {
     let listEl = this.list.$el
@@ -104,8 +100,8 @@ export default {
       this.list.render()
       // Apply parent styles
       this.list.$el.css(this.$el.css(['font-size', 'line-height']))
-      // Reset the list width
-      this.resetListWidth()
+      // Set the list width
+      this.list.$el.outerWidth(this.getListWidth())
       // Move the list element to the indicated overlay
       this.getOverlay().append(this.list.$el)
       // Get the list element

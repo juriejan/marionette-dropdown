@@ -97,19 +97,6 @@ export default Marionette.LayoutView.extend({
   getSelected: function () {
     return this.selected
   },
-  getListWidth: function () {
-    let el = this.ui.text
-    let text = el.text()
-    let width = 0
-    el.css({visibility: 'hidden'})
-    this.collection.each((model) => {
-      el.text(model.get('text'))
-      if (el.width() > width) width = el.width()
-    })
-    el.html(text)
-    el.css('visibility', '')
-    return width
-  },
   determineState: function () {
     if (this.allowEmpty === true || this.collection.size() > 0) {
       this.disabled = false
@@ -159,9 +146,6 @@ export default Marionette.LayoutView.extend({
       }
     }
   },
-  refresh: function () {
-    this.ui.text.css('min-width', this.getListWidth())
-  },
   setVisibleOptions: function (visible) {
     // Set the visibility of each model in the collection
     this.collection.each(function (model) {
@@ -173,7 +157,5 @@ export default Marionette.LayoutView.extend({
         this.select(this.getFirst())
       }
     }
-    // Re-render the list and refresh calculations
-    this.refresh()
   }
 })

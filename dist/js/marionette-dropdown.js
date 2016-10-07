@@ -99,12 +99,8 @@
           this.showList();
         }
       },
-      resetListWidth: function resetListWidth(width) {
-        if (this.list && this.list.$el) {
-          var listWidth = this.getListWidth();
-          var elWidth = this.$el.outerWidth();
-          this.list.$el.outerWidth(_.max([listWidth, elWidth]));
-        }
+      getListWidth: function getListWidth() {
+        return this.options.listWidth || this.$el.outerWidth();
       },
       positionList: function positionList(listHeight) {
         var listEl = this.list.$el;
@@ -152,8 +148,8 @@
           this.list.render();
           // Apply parent styles
           this.list.$el.css(this.$el.css(['font-size', 'line-height']));
-          // Reset the list width
-          this.resetListWidth();
+          // Set the list width
+          this.list.$el.outerWidth(this.getListWidth());
           // Move the list element to the indicated overlay
           this.getOverlay().append(this.list.$el);
           // Get the list element
@@ -387,19 +383,6 @@
       getSelected: function getSelected() {
         return this.selected;
       },
-      getListWidth: function getListWidth() {
-        var el = this.ui.text;
-        var text = el.text();
-        var width = 0;
-        el.css({ visibility: 'hidden' });
-        this.collection.each(function (model) {
-          el.text(model.get('text'));
-          if (el.width() > width) width = el.width();
-        });
-        el.html(text);
-        el.css('visibility', '');
-        return width;
-      },
       determineState: function determineState() {
         if (this.allowEmpty === true || this.collection.size() > 0) {
           this.disabled = false;
@@ -453,9 +436,6 @@
           }
         }
       },
-      refresh: function refresh() {
-        this.ui.text.css('min-width', this.getListWidth());
-      },
       setVisibleOptions: function setVisibleOptions(visible) {
         // Set the visibility of each model in the collection
         this.collection.each(function (model) {
@@ -467,8 +447,6 @@
             this.select(this.getFirst());
           }
         }
-        // Re-render the list and refresh calculations
-        this.refresh();
       }
     });
 
