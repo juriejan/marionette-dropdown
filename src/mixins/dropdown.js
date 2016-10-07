@@ -28,8 +28,7 @@ export default {
     this.scrollParent = this.$el.closest('.nano-content')
   },
   onParentScroll: function (e) {
-    let listHeight = parseInt(this.list.$el.css('height'), 10)
-    this.positionList(listHeight)
+    this.positionList()
   },
   onDestroy: function () {
     $(window).off('click', this.hideListFunc)
@@ -38,6 +37,28 @@ export default {
   },
   onKeyDown: function (e) {
     if (this.list && this.list.onKeyDown) this.list.onKeyDown(e)
+  },
+  onAttach: function () {
+    // Create the list view
+    this.list = new this.focusListView({
+      maxSize: this.maxSize,
+      childView: this.dropdownItemView,
+      collection: this.collection
+    })
+    // Render the list before showing
+    this.list.render()
+    // Make list invisible
+    animation.visible(this.list.$el, false)
+    // Apply parent styles
+    this.list.$el.css(this.$el.css(['font-size', 'line-height']))
+    // Set the list width
+    this.list.$el.outerWidth(this.getListWidth())
+    // Move the list element to the indicated overlay
+    this.getOverlay().append(this.list.$el)
+    // Reset the list height
+    this.list.resetHeight()
+    // Store list height
+    this.listHeight = parseInt(this.list.$el.css('height'), 10)
   },
   serializeData: function () {
     return {
@@ -55,7 +76,7 @@ export default {
   getListWidth: function () {
     return this.options.listWidth || this.$el.outerWidth()
   },
-  positionList: function (listHeight) {
+  positionList: function () {
     let listEl = this.list.$el
     let windowHeight = $(window).height()
     let windowWidth = $(window).width()
@@ -63,8 +84,8 @@ export default {
     let elHeight = this.$el.outerHeight()
     let elWidth = this.$el.outerWidth()
     let listWidth = this.list.$el.outerWidth()
-    let potentialTop = elOffset.top - listHeight
-    let potentialBottom = elOffset.top + elHeight + listHeight
+    let potentialTop = elOffset.top - this.listHeight
+    let potentialBottom = elOffset.top + elHeight + this.listHeight
     let potentialRight = elOffset.left + listWidth
     let expandedToLeft = (potentialRight > windowWidth)
     let expandedToTop = (potentialBottom > windowHeight) && (potentialTop > 0)
@@ -81,38 +102,21 @@ export default {
   },
   showList: function () {
     if (!this.showing && !this.hiding &&
-    (!this.collection.isEmpty() || this.allowEmpty)) {
+      (!this.collection.isEmpty() || this.allowEmpty)) {
       // Add the class indicating open status
       this.$el.addClass('open')
       // Raise the element to maintain visiblity
       this.$el.css('z-index', 2)
-      // Create the list view
-      this.list = new this.focusListView({
-        maxSize: this.maxSize,
-        childView: this.dropdownItemView,
-        collection: this.collection
-      })
       // Attach to the list close event
       this.list.listenTo(this.list, 'close', this.hideList.bind(this))
       // Prevent list from automatically rendering on collection reset
       this.list.stopListening(this.collection, 'reset')
-      // Render the list before showing
-      this.list.render()
-      // Apply parent styles
-      this.list.$el.css(this.$el.css(['font-size', 'line-height']))
-      // Set the list width
-      this.list.$el.outerWidth(this.getListWidth())
-      // Move the list element to the indicated overlay
-      this.getOverlay().append(this.list.$el)
       // Get the list element
       let listEl = this.list.$el
-      // Reset the list height
-      this.list.resetHeight()
-      let listHeight = parseInt(listEl.css('height'), 10)
       // Flatten the list element
       animation.flat(listEl)
       // Position the list before animation
-      this.positionList(listHeight)
+      this.positionList()
       // Trigger the dropdown show event
       this.trigger('dropdown:show')
       // Attach to event for hiding and scrolling the list on scroll
@@ -126,7 +130,7 @@ export default {
       })
       // Expand and show the list
       this.showing = true
-      return animation.grow(listEl, 'height', listHeight).then(() => {
+      return animation.grow(listEl, 'height', this.listHeight).then(() => {
         this.showing = false
         this.expanded = true
         this.list.refreshScroll()
@@ -152,8 +156,6 @@ export default {
         this.expanded = false
         // Return the element to it's original level
         this.$el.css('z-index', '')
-        // Destory the list
-        this.list.destroy()
         // Detach from the scroll and hiding events
         $(window).off('click', this.hideListFunc)
         this.scrollParent.off('scroll', this.onParentScrollFunc)

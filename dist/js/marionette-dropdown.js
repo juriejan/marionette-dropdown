@@ -75,8 +75,7 @@
         this.scrollParent = this.$el.closest('.nano-content');
       },
       onParentScroll: function onParentScroll(e) {
-        var listHeight = parseInt(this.list.$el.css('height'), 10);
-        this.positionList(listHeight);
+        this.positionList();
       },
       onDestroy: function onDestroy() {
         $(window).off('click', this.hideListFunc);
@@ -85,6 +84,28 @@
       },
       onKeyDown: function onKeyDown(e) {
         if (this.list && this.list.onKeyDown) this.list.onKeyDown(e);
+      },
+      onAttach: function onAttach() {
+        // Create the list view
+        this.list = new this.focusListView({
+          maxSize: this.maxSize,
+          childView: this.dropdownItemView,
+          collection: this.collection
+        });
+        // Render the list before showing
+        this.list.render();
+        // Make list invisible
+        animation.visible(this.list.$el, false);
+        // Apply parent styles
+        this.list.$el.css(this.$el.css(['font-size', 'line-height']));
+        // Set the list width
+        this.list.$el.outerWidth(this.getListWidth());
+        // Move the list element to the indicated overlay
+        this.getOverlay().append(this.list.$el);
+        // Reset the list height
+        this.list.resetHeight();
+        // Store list height
+        this.listHeight = parseInt(this.list.$el.css('height'), 10);
       },
       serializeData: function serializeData() {
         return {
@@ -102,7 +123,7 @@
       getListWidth: function getListWidth() {
         return this.options.listWidth || this.$el.outerWidth();
       },
-      positionList: function positionList(listHeight) {
+      positionList: function positionList() {
         var listEl = this.list.$el;
         var windowHeight = $(window).height();
         var windowWidth = $(window).width();
@@ -110,8 +131,8 @@
         var elHeight = this.$el.outerHeight();
         var elWidth = this.$el.outerWidth();
         var listWidth = this.list.$el.outerWidth();
-        var potentialTop = elOffset.top - listHeight;
-        var potentialBottom = elOffset.top + elHeight + listHeight;
+        var potentialTop = elOffset.top - this.listHeight;
+        var potentialBottom = elOffset.top + elHeight + this.listHeight;
         var potentialRight = elOffset.left + listWidth;
         var expandedToLeft = potentialRight > windowWidth;
         var expandedToTop = potentialBottom > windowHeight && potentialTop > 0;
@@ -134,33 +155,16 @@
           this.$el.addClass('open');
           // Raise the element to maintain visiblity
           this.$el.css('z-index', 2);
-          // Create the list view
-          this.list = new this.focusListView({
-            maxSize: this.maxSize,
-            childView: this.dropdownItemView,
-            collection: this.collection
-          });
           // Attach to the list close event
           this.list.listenTo(this.list, 'close', this.hideList.bind(this));
           // Prevent list from automatically rendering on collection reset
           this.list.stopListening(this.collection, 'reset');
-          // Render the list before showing
-          this.list.render();
-          // Apply parent styles
-          this.list.$el.css(this.$el.css(['font-size', 'line-height']));
-          // Set the list width
-          this.list.$el.outerWidth(this.getListWidth());
-          // Move the list element to the indicated overlay
-          this.getOverlay().append(this.list.$el);
           // Get the list element
           var listEl = this.list.$el;
-          // Reset the list height
-          this.list.resetHeight();
-          var listHeight = parseInt(listEl.css('height'), 10);
           // Flatten the list element
           animation.flat(listEl);
           // Position the list before animation
-          this.positionList(listHeight);
+          this.positionList();
           // Trigger the dropdown show event
           this.trigger('dropdown:show');
           // Attach to event for hiding and scrolling the list on scroll
@@ -174,7 +178,7 @@
           });
           // Expand and show the list
           this.showing = true;
-          return animation.grow(listEl, 'height', listHeight).then(function () {
+          return animation.grow(listEl, 'height', this.listHeight).then(function () {
             _this.showing = false;
             _this.expanded = true;
             _this.list.refreshScroll();
@@ -206,8 +210,6 @@
             _this2.expanded = false;
             // Return the element to it's original level
             _this2.$el.css('z-index', '');
-            // Destory the list
-            _this2.list.destroy();
             // Detach from the scroll and hiding events
             $(window).off('click', _this2.hideListFunc);
             _this2.scrollParent.off('scroll', _this2.onParentScrollFunc);
