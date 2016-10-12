@@ -50,7 +50,7 @@
     "jquery": "~2.2.0",
     "lodash": "~4.0.0",
     "marionette-focuslist": "juriejan/marionette-focuslist",
-    "nanoscroller": "juriejan/nanoScrollerJS#sherpa-master"
+    "nanoscroller": "juriejan/nanoScrollerJS#navigator-master"
   },
   "devDependencies": {
     "mocha": "~2.3.4",
