@@ -56,6 +56,10 @@ export default {
     // Move the list element to the indicated overlay
     this.getOverlay().append(this.list.$el)
     // Reset the list height
+    this.resetListHeight()
+  },
+  resetListHeight: function () {
+    // Reset the list height
     this.list.resetHeight()
     // Store list height
     this.listHeight = parseInt(this.list.$el.css('height'), 10)
