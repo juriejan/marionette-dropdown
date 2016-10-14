@@ -92,6 +92,8 @@
           childView: this.dropdownItemView,
           collection: this.collection
         });
+        // Attach to list events
+        this.listenTo(this.list, 'render:collection', this.onListCollectionRender);
         // Render the list before showing
         this.list.render();
         // Make list invisible
@@ -103,6 +105,9 @@
         // Move the list element to the indicated overlay
         this.getOverlay().append(this.list.$el);
         // Reset the list height
+        this.resetListHeight();
+      },
+      onListCollectionRender: function onListCollectionRender() {
         this.resetListHeight();
       },
       resetListHeight: function resetListHeight() {
