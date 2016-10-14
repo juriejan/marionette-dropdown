@@ -342,8 +342,10 @@
         }
       },
       onRender: function onRender() {
-        this.determineState();
-        this.listenTo(this.collection, 'reset', this.determineState);
+        if (!this.options.noInitialState) {
+          this.determineState();
+          this.listenTo(this.collection, 'reset', this.determineState);
+        }
       },
       onShow: function onShow() {
         if (this.selected) {

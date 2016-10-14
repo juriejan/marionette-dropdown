@@ -47,8 +47,10 @@ export default Marionette.LayoutView.extend({
     }
   },
   onRender: function () {
-    this.determineState()
-    this.listenTo(this.collection, 'reset', this.determineState)
+    if (!this.options.noInitialState) {
+      this.determineState()
+      this.listenTo(this.collection, 'reset', this.determineState)
+    }
   },
   onShow: function () {
     if (this.selected) { this.select(this.selected, true) }
