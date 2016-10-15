@@ -94,6 +94,7 @@
         });
         // Attach to list events
         this.listenTo(this.list, 'render:collection', this.onListCollectionRender);
+        this.listenTo(this.collection, 'update', this.onCollectionUpdate);
         // Render the list before showing
         this.list.render();
         // Make list invisible
@@ -108,6 +109,9 @@
         this.resetListHeight();
       },
       onListCollectionRender: function onListCollectionRender() {
+        this.resetListHeight();
+      },
+      onCollectionUpdate: function onCollectionUpdate() {
         this.resetListHeight();
       },
       resetListHeight: function resetListHeight() {

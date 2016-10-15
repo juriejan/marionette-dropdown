@@ -45,6 +45,8 @@ export default {
       childView: this.dropdownItemView,
       collection: this.collection
     })
+    // Attach to collection events that relate to list
+    this.listenTo(this.collection, 'update', this.onCollectionUpdate)
     // Attach to list events
     this.listenTo(this.list, 'render:collection', this.onListCollectionRender)
     // Render the list before showing
@@ -61,6 +63,9 @@ export default {
     this.resetListHeight()
   },
   onListCollectionRender: function () {
+    this.resetListHeight()
+  },
+  onCollectionUpdate: function () {
     this.resetListHeight()
   },
   resetListHeight: function () {
