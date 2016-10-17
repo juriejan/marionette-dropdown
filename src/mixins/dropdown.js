@@ -55,8 +55,8 @@ export default {
     animation.visible(this.list.$el, false)
     // Apply parent styles
     this.list.$el.css(this.$el.css(['font-size', 'line-height']))
-    // Set the list width
-    this.list.$el.outerWidth(this.getListWidth())
+    // Reset the list width
+    this.resetListWidth()
     // Move the list element to the indicated overlay
     this.getOverlay().append(this.list.$el)
     // Reset the list height
@@ -74,6 +74,10 @@ export default {
     // Store list height
     this.listHeight = parseInt(this.list.$el.css('height'), 10)
   },
+  resetListWidth: function () {
+    let width = this.options.listWidth || this.$el.outerWidth()
+    this.list.$el.outerWidth(width)
+  },
   serializeData: function () {
     return {
       name: this.name,
@@ -86,9 +90,6 @@ export default {
     } else {
       this.showList()
     }
-  },
-  getListWidth: function () {
-    return this.options.listWidth || this.$el.outerWidth()
   },
   positionList: function () {
     let listEl = this.list.$el

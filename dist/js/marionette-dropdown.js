@@ -92,17 +92,18 @@
           childView: this.dropdownItemView,
           collection: this.collection
         });
+        // Attach to collection events that relate to list
+        this.listenTo(this.collection, 'update', this.onCollectionUpdate);
         // Attach to list events
         this.listenTo(this.list, 'render:collection', this.onListCollectionRender);
-        this.listenTo(this.collection, 'update', this.onCollectionUpdate);
         // Render the list before showing
         this.list.render();
         // Make list invisible
         animation.visible(this.list.$el, false);
         // Apply parent styles
         this.list.$el.css(this.$el.css(['font-size', 'line-height']));
-        // Set the list width
-        this.list.$el.outerWidth(this.getListWidth());
+        // Reset the list width
+        this.resetListWidth();
         // Move the list element to the indicated overlay
         this.getOverlay().append(this.list.$el);
         // Reset the list height
@@ -120,6 +121,10 @@
         // Store list height
         this.listHeight = parseInt(this.list.$el.css('height'), 10);
       },
+      resetListWidth: function resetListWidth() {
+        var width = this.options.listWidth || this.$el.outerWidth();
+        this.list.$el.outerWidth(width);
+      },
       serializeData: function serializeData() {
         return {
           name: this.name,
@@ -132,9 +137,6 @@
         } else {
           this.showList();
         }
-      },
-      getListWidth: function getListWidth() {
-        return this.options.listWidth || this.$el.outerWidth();
       },
       positionList: function positionList() {
         var listEl = this.list.$el;
@@ -348,8 +350,8 @@
       onRender: function onRender() {
         if (!this.options.noInitialState) {
           this.determineState();
-          this.listenTo(this.collection, 'reset', this.determineState);
         }
+        this.listenTo(this.collection, 'reset', this.determineState);
       },
       onShow: function onShow() {
         if (this.selected) {
