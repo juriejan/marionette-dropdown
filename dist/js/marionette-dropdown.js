@@ -413,16 +413,16 @@
         if (this.disabled) {
           this.$el.addClass('disabled');
           this.ui.button.attr('tabindex', -1);
-          this.select(null);
+          this.select(null, true);
         } else {
           this.$el.removeClass('disabled');
           this.ui.button.attr('tabindex', 0);
           if (this.selectedId) {
-            this.select(this.collection.get(this.selectedId));
+            this.select(this.collection.get(this.selectedId), true);
             this.selectedId = null;
           } else {
             var id = this.ui.input.val() || this.selected && this.selected.id;
-            this.select(this.collection.get(id) || this.getFirst());
+            this.select(this.collection.get(id) || this.getFirst(), true);
           }
         }
       },
