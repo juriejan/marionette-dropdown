@@ -67,6 +67,7 @@
         } else {
           this.collection = options.collection;
         }
+        this.setModelsVisibilityAttribute();
       },
       onRender: function onRender() {
         if (this.expanded) {
@@ -90,10 +91,11 @@
         this.list = new this.focusListView({
           maxSize: this.maxSize,
           childView: this.dropdownItemView,
-          collection: this.collection
+          collection: new Backbone.Collection(this.collection.where({ visible: true }))
         });
         // Attach to collection events that relate to list
         this.listenTo(this.collection, 'update', this.onCollectionUpdate);
+        this.listenTo(this.collection, 'change', this.onCollectionUpdate);
         // Attach to list events
         this.listenTo(this.list, 'render:collection', this.onListCollectionRender);
         // Render the list before showing
@@ -113,6 +115,7 @@
         this.resetListHeight();
       },
       onCollectionUpdate: function onCollectionUpdate() {
+        this.list.collection.reset(this.collection.where({ visible: true }));
         this.resetListHeight();
       },
       resetListHeight: function resetListHeight() {
@@ -239,6 +242,13 @@
         } else {
           return Promise.resolve();
         }
+      },
+      setModelsVisibilityAttribute: function setModelsVisibilityAttribute() {
+        this.collection.each(function (model) {
+          if (!model.has('visible')) {
+            model.set('visible', true);
+          }
+        });
       }
     };
 
