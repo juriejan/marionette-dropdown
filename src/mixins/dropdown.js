@@ -1,6 +1,7 @@
 
 import $ from 'jquery'
 import _ from 'lodash'
+import Backbone from 'backbone'
 
 import animation from 'animation'
 
@@ -22,6 +23,7 @@ export default {
     } else {
       this.collection = options.collection
     }
+    this.setModelsVisibilityAttribute()
   },
   onRender: function () {
     if (this.expanded) { this.list.$el.css({opacity: 1}) }
@@ -43,10 +45,11 @@ export default {
     this.list = new this.focusListView({
       maxSize: this.maxSize,
       childView: this.dropdownItemView,
-      collection: this.collection
+      collection: new Backbone.Collection(this.collection.where({visible: true}))
     })
     // Attach to collection events that relate to list
     this.listenTo(this.collection, 'update', this.onCollectionUpdate)
+    this.listenTo(this.collection, 'change', this.onCollectionUpdate)
     // Attach to list events
     this.listenTo(this.list, 'render:collection', this.onListCollectionRender)
     // Render the list before showing
@@ -66,6 +69,7 @@ export default {
     this.resetListHeight()
   },
   onCollectionUpdate: function () {
+    this.list.collection.reset(this.collection.where({visible: true}))
     this.resetListHeight()
   },
   resetListHeight: function () {
@@ -183,5 +187,12 @@ export default {
     } else {
       return Promise.resolve()
     }
+  },
+  setModelsVisibilityAttribute: function () {
+    this.collection.each((model) => {
+      if (!model.has('visible')) {
+        model.set('visible', true)
+      }
+    })
   }
 }
