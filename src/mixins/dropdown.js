@@ -137,12 +137,6 @@ export default {
       // Attach to event for hiding and scrolling the list on scroll
       this.onParentScrollFunc = this.onParentScroll.bind(this)
       this.scrollParent.on('scroll', this.onParentScrollFunc)
-      // Attach to event for hiding the list on click (skip current)
-      _.defer(() => {
-        this.hideListFunc = _.bind(this.hideList, this, null)
-        $(window).one('click', this.hideListFunc)
-        this.scrollParent.one('scroll', this.hideListFunc)
-      })
       // Expand and show the list
       this.showing = true
       return animation.grow(listEl, 'height', this.listHeight).then(() => {
@@ -153,6 +147,12 @@ export default {
         this.listenTo(this.list, 'select', this.onItemSelect)
         // Trigger freeze on parent if available
         if (this.parent) { this.parent.trigger('freeze') }
+        // Attach to event for hiding the list on click (skip current)
+        _.defer(() => {
+          this.hideListFunc = _.bind(this.hideList, this, null)
+          $(window).one('click', this.hideListFunc)
+          this.scrollParent.one('scroll', this.hideListFunc)
+        })
       })
     } else {
       return Promise.resolve()

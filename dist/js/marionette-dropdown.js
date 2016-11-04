@@ -185,12 +185,6 @@
           // Attach to event for hiding and scrolling the list on scroll
           this.onParentScrollFunc = this.onParentScroll.bind(this);
           this.scrollParent.on('scroll', this.onParentScrollFunc);
-          // Attach to event for hiding the list on click (skip current)
-          _.defer(function () {
-            _this.hideListFunc = _.bind(_this.hideList, _this, null);
-            $(window).one('click', _this.hideListFunc);
-            _this.scrollParent.one('scroll', _this.hideListFunc);
-          });
           // Expand and show the list
           this.showing = true;
           return animation.grow(listEl, 'height', this.listHeight).then(function () {
@@ -203,6 +197,12 @@
             if (_this.parent) {
               _this.parent.trigger('freeze');
             }
+            // Attach to event for hiding the list on click (skip current)
+            _.defer(function () {
+              _this.hideListFunc = _.bind(_this.hideList, _this, null);
+              $(window).one('click', _this.hideListFunc);
+              _this.scrollParent.one('scroll', _this.hideListFunc);
+            });
           });
         } else {
           return Promise.resolve();
@@ -363,7 +363,6 @@
         this.selectId(value);
       },
       onButtonClick: function onButtonClick(e) {
-        e.stopPropagation();
         e.preventDefault();
         if (!this.expanded) {
           _.defer(this.showList.bind(this));
