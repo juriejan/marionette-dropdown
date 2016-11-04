@@ -66,6 +66,7 @@ export default Marionette.LayoutView.extend({
       _.defer(this.showList.bind(this))
     } else {
       _.defer(this.hideList.bind(this))
+      this.ui.button.blur()
     }
   },
   onButtonFocus: function (e) {

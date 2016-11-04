@@ -369,6 +369,7 @@
           _.defer(this.showList.bind(this));
         } else {
           _.defer(this.hideList.bind(this));
+          this.ui.button.blur();
         }
       },
       onButtonFocus: function onButtonFocus(e) {
