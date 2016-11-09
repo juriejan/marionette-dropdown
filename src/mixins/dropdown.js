@@ -34,8 +34,7 @@ export default {
     $(window).off('click', this.hideListFunc)
     this.scrollParent.off('scroll', this.hideListFunc)
     this.scrollParent.off('scroll', this.onParentScrollFunc)
-    this.list.destroy()
-    console.log('destroy')
+    if (this.list) this.list.destroy()
   },
   onKeyDown: function (e) {
     if (this.list && this.list.onKeyDown) this.list.onKeyDown(e)

@@ -81,8 +81,7 @@
         $(window).off('click', this.hideListFunc);
         this.scrollParent.off('scroll', this.hideListFunc);
         this.scrollParent.off('scroll', this.onParentScrollFunc);
-        this.list.destroy();
-        console.log('destroy');
+        if (this.list) this.list.destroy();
       },
       onKeyDown: function onKeyDown(e) {
         if (this.list && this.list.onKeyDown) this.list.onKeyDown(e);
@@ -418,7 +417,7 @@
           this.select(null, true);
         } else {
           this.$el.removeClass('disabled');
-          this.ui.button.attr('tabindex', 0);
+          if (this.ui.button.attr) this.ui.button.attr('tabindex', 0);
           if (this.selectedId) {
             this.select(this.collection.get(this.selectedId), true);
             this.selectedId = null;

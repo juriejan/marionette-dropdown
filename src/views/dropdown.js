@@ -113,7 +113,7 @@ export default Marionette.LayoutView.extend({
       this.select(null, true)
     } else {
       this.$el.removeClass('disabled')
-      this.ui.button.attr('tabindex', 0)
+      if (this.ui.button.attr) this.ui.button.attr('tabindex', 0)
       if (this.selectedId) {
         this.select(this.collection.get(this.selectedId), true)
         this.selectedId = null
