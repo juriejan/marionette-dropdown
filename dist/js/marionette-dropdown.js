@@ -199,11 +199,11 @@
               _this.parent.trigger('freeze');
             }
             // Attach to event for hiding the list on click (skip current)
-            _.defer(function () {
+            _.delay(function () {
               _this.hideListFunc = _.bind(_this.hideList, _this, null);
               $(window).one('click', _this.hideListFunc);
               _this.scrollParent.one('scroll', _this.hideListFunc);
-            });
+            }, 1);
           });
         } else {
           return Promise.resolve();

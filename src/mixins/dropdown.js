@@ -149,11 +149,11 @@ export default {
         // Trigger freeze on parent if available
         if (this.parent) { this.parent.trigger('freeze') }
         // Attach to event for hiding the list on click (skip current)
-        _.defer(() => {
+        _.delay(() => {
           this.hideListFunc = _.bind(this.hideList, this, null)
           $(window).one('click', this.hideListFunc)
           this.scrollParent.one('scroll', this.hideListFunc)
-        })
+        }, 1)
       })
     } else {
       return Promise.resolve()
