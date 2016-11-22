@@ -31,7 +31,7 @@ export default {
     this.positionList()
   },
   onDestroy: function () {
-    $(window).off('click', this.hideListFunc)
+    if (this.hideListFunc) $(window).off('click', this.hideListFunc)
     this.scrollParent.off('scroll', this.hideListFunc)
     this.scrollParent.off('scroll', this.onParentScrollFunc)
     if (this.list) this.list.destroy()
@@ -149,11 +149,11 @@ export default {
         // Trigger freeze on parent if available
         if (this.parent) { this.parent.trigger('freeze') }
         // Attach to event for hiding the list on click (skip current)
-        _.delay(() => {
+        _.defer(() => {
           this.hideListFunc = _.bind(this.hideList, this, null)
           $(window).one('click', this.hideListFunc)
           this.scrollParent.one('scroll', this.hideListFunc)
-        }, 1)
+        })
       })
     } else {
       return Promise.resolve()
@@ -172,8 +172,10 @@ export default {
         this.expanded = false
         // Return the element to it's original level
         this.$el.css('z-index', '')
-        // Detach from the scroll and hiding events
-        $(window).off('click', this.hideListFunc)
+        // Detach the hide from the window click
+        if (this.hideListFunc) $(window).off('click', this.hideListFunc)
+        this.hideListFunc = null
+        // Detach the hide from the scroll
         this.scrollParent.off('scroll', this.onParentScrollFunc)
         this.scrollParent.off('scroll', this.hideListFunc)
         // Trigger the hidden event
