@@ -22,6 +22,7 @@ export default {
     } else {
       this.collection = options.collection
     }
+    this.hideListFunc = _.bind(this.hideList, this, null)
   },
   onRender: function () {
     if (this.expanded) { this.list.$el.css({opacity: 1}) }
@@ -31,7 +32,7 @@ export default {
     this.positionList()
   },
   onDestroy: function () {
-    if (this.hideListFunc) $(window).off('click', this.hideListFunc)
+    $(window).off('click', this.hideListFunc)
     this.scrollParent.off('scroll', this.hideListFunc)
     this.scrollParent.off('scroll', this.onParentScrollFunc)
     if (this.list) this.list.destroy()
@@ -150,7 +151,6 @@ export default {
         if (this.parent) { this.parent.trigger('freeze') }
         // Attach to event for hiding the list on click (skip current)
         _.defer(() => {
-          this.hideListFunc = _.bind(this.hideList, this, null)
           $(window).one('click', this.hideListFunc)
           this.scrollParent.one('scroll', this.hideListFunc)
         })
@@ -173,8 +173,7 @@ export default {
         // Return the element to it's original level
         this.$el.css('z-index', '')
         // Detach the hide from the window click
-        if (this.hideListFunc) $(window).off('click', this.hideListFunc)
-        this.hideListFunc = null
+        $(window).off('click', this.hideListFunc)
         // Detach the hide from the scroll
         this.scrollParent.off('scroll', this.onParentScrollFunc)
         this.scrollParent.off('scroll', this.hideListFunc)

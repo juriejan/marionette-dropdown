@@ -67,6 +67,7 @@
         } else {
           this.collection = options.collection;
         }
+        this.hideListFunc = _.bind(this.hideList, this, null);
       },
       onRender: function onRender() {
         if (this.expanded) {
@@ -78,7 +79,7 @@
         this.positionList();
       },
       onDestroy: function onDestroy() {
-        if (this.hideListFunc) $(window).off('click', this.hideListFunc);
+        $(window).off('click', this.hideListFunc);
         this.scrollParent.off('scroll', this.hideListFunc);
         this.scrollParent.off('scroll', this.onParentScrollFunc);
         if (this.list) this.list.destroy();
@@ -200,7 +201,6 @@
             }
             // Attach to event for hiding the list on click (skip current)
             _.defer(function () {
-              _this.hideListFunc = _.bind(_this.hideList, _this, null);
               $(window).one('click', _this.hideListFunc);
               _this.scrollParent.one('scroll', _this.hideListFunc);
             });
@@ -227,8 +227,7 @@
             // Return the element to it's original level
             _this2.$el.css('z-index', '');
             // Detach the hide from the window click
-            if (_this2.hideListFunc) $(window).off('click', _this2.hideListFunc);
-            _this2.hideListFunc = null;
+            $(window).off('click', _this2.hideListFunc);
             // Detach the hide from the scroll
             _this2.scrollParent.off('scroll', _this2.onParentScrollFunc);
             _this2.scrollParent.off('scroll', _this2.hideListFunc);
