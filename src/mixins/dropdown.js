@@ -130,8 +130,6 @@ export default {
       this.list.stopListening(this.collection, 'reset')
       // Get the list element
       let listEl = this.list.$el
-      // Flatten the list element
-      animation.flat(listEl)
       // Position the list before animation
       this.positionList()
       // Trigger the dropdown show event
@@ -141,7 +139,7 @@ export default {
       this.scrollParent.on('scroll', this.onParentScrollFunc)
       // Expand and show the list
       this.showing = true
-      return animation.grow(listEl, 'height', this.listHeight).then(() => {
+      return animation.show(listEl).then(() => {
         this.showing = false
         this.expanded = true
         this.list.refreshScroll()
@@ -167,7 +165,7 @@ export default {
       _.defer(() => this.stopListening(this.list, 'select', this.onItemSelect))
       // Shrink and hide the element
       this.hiding = true
-      return animation.shrink(this.list.$el, 'height').then(() => {
+      return animation.hide(this.list.$el).then(() => {
         this.hiding = false
         this.expanded = false
         // Return the element to it's original level

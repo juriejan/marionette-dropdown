@@ -179,7 +179,7 @@
           // Get the list element
           var listEl = this.list.$el;
           // Flatten the list element
-          animation.flat(listEl);
+          // animation.flat(listEl)
           // Position the list before animation
           this.positionList();
           // Trigger the dropdown show event
@@ -189,7 +189,8 @@
           this.scrollParent.on('scroll', this.onParentScrollFunc);
           // Expand and show the list
           this.showing = true;
-          return animation.grow(listEl, 'height', this.listHeight).then(function () {
+          return animation.show(listEl).then(function () {
+            console.log('show');
             _this.showing = false;
             _this.expanded = true;
             _this.list.refreshScroll();
@@ -221,7 +222,7 @@
           });
           // Shrink and hide the element
           this.hiding = true;
-          return animation.shrink(this.list.$el, 'height').then(function () {
+          return animation.hide(this.list.$el).then(function () {
             _this2.hiding = false;
             _this2.expanded = false;
             // Return the element to it's original level
