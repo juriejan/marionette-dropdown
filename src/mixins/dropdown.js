@@ -107,9 +107,9 @@ export default {
     let expandedToLeft = (potentialRight > windowWidth)
     let expandedToTop = (potentialBottom > windowHeight) && (potentialTop > 0)
     if (expandedToTop) {
-      listEl.css({top: '', bottom: (windowHeight - elOffset.top)})
+      listEl.css({top: '', bottom: (windowHeight - (elOffset.top + elHeight))})
     } else {
-      listEl.css({top: (elOffset.top + elHeight), bottom: ''})
+      listEl.css({top: elOffset.top, bottom: ''})
     }
     if (expandedToLeft) {
       listEl.css({right: (windowWidth - (elOffset.left + elWidth))})
