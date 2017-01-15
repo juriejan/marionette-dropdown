@@ -178,8 +178,6 @@
           this.list.stopListening(this.collection, 'reset');
           // Get the list element
           var listEl = this.list.$el;
-          // Flatten the list element
-          // animation.flat(listEl)
           // Position the list before animation
           this.positionList();
           // Trigger the dropdown show event
@@ -190,7 +188,6 @@
           // Expand and show the list
           this.showing = true;
           return animation.show(listEl).then(function () {
-            console.log('show');
             _this.showing = false;
             _this.expanded = true;
             _this.list.refreshScroll();
@@ -350,16 +347,9 @@
           }
         }
       },
-      onRender: function onRender() {
-        if (!this.options.noInitialState) {
-          this.determineState();
-        }
+      onBeforeShow: function onBeforeShow() {
         this.listenTo(this.collection, 'reset', this.determineState);
-      },
-      onShow: function onShow() {
-        if (this.selected) {
-          this.select(this.selected, true);
-        }
+        if (!this.options.noInitialState) this.determineState();
       },
       onInputChange: function onInputChange() {
         var value = this.ui.input.val();

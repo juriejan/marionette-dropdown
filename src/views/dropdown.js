@@ -46,14 +46,9 @@ export default Marionette.LayoutView.extend({
       if (child) { child.$el.addClass('focus') }
     }
   },
-  onRender: function () {
-    if (!this.options.noInitialState) {
-      this.determineState()
-    }
+  onBeforeShow: function () {
     this.listenTo(this.collection, 'reset', this.determineState)
-  },
-  onShow: function () {
-    if (this.selected) { this.select(this.selected, true) }
+    if (!this.options.noInitialState) this.determineState()
   },
   onInputChange: function () {
     let value = this.ui.input.val()
