@@ -142,7 +142,6 @@ export default {
       return animation.show(listEl).then(() => {
         this.showing = false
         this.expanded = true
-        this.list.refreshScroll()
         // Listen to select events
         this.listenTo(this.list, 'select', this.onItemSelect)
         // Trigger freeze on parent if available

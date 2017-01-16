@@ -190,7 +190,6 @@
           return animation.show(listEl).then(function () {
             _this.showing = false;
             _this.expanded = true;
-            _this.list.refreshScroll();
             // Listen to select events
             _this.listenTo(_this.list, 'select', _this.onItemSelect);
             // Trigger freeze on parent if available
