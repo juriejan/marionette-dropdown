@@ -148,8 +148,10 @@ export default Marionette.LayoutView.extend({
   setVisibleOptions: function (visible) {
     // Set the visibility of each model in the collection
     this.collection.each(function (model) {
-      model.set('visible', _.includes(visible, model.id))
+      model.set('visible', _.includes(visible, model.id), {silent: true})
     })
+    // Trigger a change event on the collection
+    this.collection.trigger('change')
     // Determine if the selection should be changed
     if (this.selected) {
       if (this.selected.get('visible') === false) {
