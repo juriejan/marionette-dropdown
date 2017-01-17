@@ -72,10 +72,7 @@ export default {
     this.resetListHeight()
   },
   resetListHeight: function () {
-    // Reset the list height
     this.list.resetHeight()
-    // Store list height
-    this.listHeight = parseInt(this.list.$el.css('height'), 10)
   },
   resetListWidth: function () {
     let width = this.options.listWidth || this.$el.outerWidth()
@@ -102,8 +99,8 @@ export default {
     let elHeight = this.$el.outerHeight()
     let elWidth = this.$el.outerWidth()
     let listWidth = this.list.$el.outerWidth()
-    let potentialTop = elOffset.top - this.listHeight
-    let potentialBottom = elOffset.top + elHeight + this.listHeight
+    let potentialTop = elOffset.top - this.list.height
+    let potentialBottom = elOffset.top + elHeight + this.list.height
     let potentialRight = elOffset.left + listWidth
     let expandedToLeft = (potentialRight > windowWidth)
     let expandedToTop = (potentialBottom > windowHeight) && (potentialTop > 0)

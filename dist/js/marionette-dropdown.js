@@ -119,10 +119,7 @@
         this.resetListHeight();
       },
       resetListHeight: function resetListHeight() {
-        // Reset the list height
         this.list.resetHeight();
-        // Store list height
-        this.listHeight = parseInt(this.list.$el.css('height'), 10);
       },
       resetListWidth: function resetListWidth() {
         var width = this.options.listWidth || this.$el.outerWidth();
@@ -149,8 +146,8 @@
         var elHeight = this.$el.outerHeight();
         var elWidth = this.$el.outerWidth();
         var listWidth = this.list.$el.outerWidth();
-        var potentialTop = elOffset.top - this.listHeight;
-        var potentialBottom = elOffset.top + elHeight + this.listHeight;
+        var potentialTop = elOffset.top - this.list.height;
+        var potentialBottom = elOffset.top + elHeight + this.list.height;
         var potentialRight = elOffset.left + listWidth;
         var expandedToLeft = potentialRight > windowWidth;
         var expandedToTop = potentialBottom > windowHeight && potentialTop > 0;
