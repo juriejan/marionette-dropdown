@@ -45,7 +45,8 @@ export default {
     this.list = new this.focusListView({
       maxSize: this.maxSize,
       childView: this.dropdownItemView,
-      collection: this.collection
+      collection: this.collection,
+      scroll: this.options.scroll
     })
     // Attach to collection events that relate to list
     this.listenTo(this.collection, 'update', this.onCollectionUpdate)
