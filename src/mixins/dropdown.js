@@ -73,8 +73,10 @@ export default {
     this.list.resetHeight()
   },
   resetListWidth: function () {
-    let width = this.options.listWidth || this.$el.outerWidth()
-    this.list.$el.outerWidth(width)
+    if (this.options.scroll) {
+      let width = this.options.listWidth || this.$el.outerWidth()
+      this.list.$el.outerWidth(width)
+    }
   },
   serializeData: function () {
     return {

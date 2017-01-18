@@ -103,8 +103,6 @@
         this.list.render();
         // Make list invisible
         animation.visible(this.list.$el, false);
-        // Apply parent styles
-        this.list.$el.css(this.$el.css(['font-size', 'line-height']));
         // Reset the list width
         this.resetListWidth();
         // Move the list element to the indicated overlay
@@ -122,8 +120,10 @@
         this.list.resetHeight();
       },
       resetListWidth: function resetListWidth() {
-        var width = this.options.listWidth || this.$el.outerWidth();
-        this.list.$el.outerWidth(width);
+        if (this.options.scroll) {
+          var width = this.options.listWidth || this.$el.outerWidth();
+          this.list.$el.outerWidth(width);
+        }
       },
       serializeData: function serializeData() {
         return {
