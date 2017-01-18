@@ -48,8 +48,6 @@ export default {
       collection: this.collection,
       scroll: this.options.scroll
     })
-    // Attach to collection events that relate to list
-    this.listenTo(this.collection, 'update', this.onCollectionUpdate)
     // Attach to list events
     this.listenTo(this.list, 'render:collection', this.onListCollectionRender)
     // Render the list before showing
@@ -60,17 +58,11 @@ export default {
     this.resetListWidth()
     // Move the list element to the indicated overlay
     this.getOverlay().append(this.list.$el)
-    // Reset the list height
-    this.resetListHeight()
+    // Refresh the list scrolling
+    if (this.options.scroll) this.list.refreshScroll()
   },
   onListCollectionRender: function () {
-    this.resetListHeight()
-  },
-  onCollectionUpdate: function () {
-    this.resetListHeight()
-  },
-  resetListHeight: function () {
-    this.list.resetHeight()
+    if (this.options.scroll) this.list.refreshScroll()
   },
   resetListWidth: function () {
     if (this.options.scroll) {
@@ -99,8 +91,9 @@ export default {
     let elHeight = this.$el.outerHeight()
     let elWidth = this.$el.outerWidth()
     let listWidth = this.list.$el.outerWidth()
-    let potentialTop = elOffset.top - this.list.height
-    let potentialBottom = elOffset.top + elHeight + this.list.height
+    let listHeight = this.list.$el.outerHeight()
+    let potentialTop = elOffset.top - listHeight
+    let potentialBottom = elOffset.top + elHeight + listHeight
     let potentialRight = elOffset.left + listWidth
     let expandedToLeft = (potentialRight > windowWidth)
     let expandedToTop = (potentialBottom > windowHeight) && (potentialTop > 0)

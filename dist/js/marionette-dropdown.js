@@ -95,8 +95,6 @@
           collection: this.collection,
           scroll: this.options.scroll
         });
-        // Attach to collection events that relate to list
-        this.listenTo(this.collection, 'update', this.onCollectionUpdate);
         // Attach to list events
         this.listenTo(this.list, 'render:collection', this.onListCollectionRender);
         // Render the list before showing
@@ -107,17 +105,11 @@
         this.resetListWidth();
         // Move the list element to the indicated overlay
         this.getOverlay().append(this.list.$el);
-        // Reset the list height
-        this.resetListHeight();
+        // Refresh the list scrolling
+        if (this.options.scroll) this.list.refreshScroll();
       },
       onListCollectionRender: function onListCollectionRender() {
-        this.resetListHeight();
-      },
-      onCollectionUpdate: function onCollectionUpdate() {
-        this.resetListHeight();
-      },
-      resetListHeight: function resetListHeight() {
-        this.list.resetHeight();
+        if (this.options.scroll) this.list.refreshScroll();
       },
       resetListWidth: function resetListWidth() {
         if (this.options.scroll) {
@@ -146,8 +138,9 @@
         var elHeight = this.$el.outerHeight();
         var elWidth = this.$el.outerWidth();
         var listWidth = this.list.$el.outerWidth();
-        var potentialTop = elOffset.top - this.list.height;
-        var potentialBottom = elOffset.top + elHeight + this.list.height;
+        var listHeight = this.list.$el.outerHeight();
+        var potentialTop = elOffset.top - listHeight;
+        var potentialBottom = elOffset.top + elHeight + listHeight;
         var potentialRight = elOffset.left + listWidth;
         var expandedToLeft = potentialRight > windowWidth;
         var expandedToTop = potentialBottom > windowHeight && potentialTop > 0;
