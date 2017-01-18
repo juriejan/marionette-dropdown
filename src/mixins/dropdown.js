@@ -56,8 +56,6 @@ export default {
     this.list.render()
     // Make list invisible
     animation.visible(this.list.$el, false)
-    // Apply parent styles
-    this.list.$el.css(this.$el.css(['font-size', 'line-height']))
     // Reset the list width
     this.resetListWidth()
     // Move the list element to the indicated overlay
