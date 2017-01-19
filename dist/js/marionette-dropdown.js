@@ -54,7 +54,6 @@
         keydown: 'onKeyDown'
       },
       initialize: function initialize(options) {
-        this.maxSize = this.maxSize || options.maxSize;
         this.placeholder = this.placeholder || options.placeholder;
         this.allowEmpty = this.allowEmpty || options.allowEmpty;
         this.expanded = false;
@@ -90,7 +89,6 @@
       onAttach: function onAttach() {
         // Create the list view
         this.list = new this.focusListView({
-          maxSize: this.maxSize,
           childView: this.dropdownItemView,
           collection: this.collection,
           scroll: this.options.scroll
