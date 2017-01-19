@@ -48,7 +48,7 @@ export default Marionette.LayoutView.extend({
   },
   onBeforeShow: function () {
     this.listenTo(this.collection, 'reset', this.determineState)
-    if (!this.options.noInitialState) this.determineState()
+    this.determineState()
   },
   onInputChange: function () {
     let value = this.ui.input.val()

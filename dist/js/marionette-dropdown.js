@@ -337,7 +337,7 @@
       },
       onBeforeShow: function onBeforeShow() {
         this.listenTo(this.collection, 'reset', this.determineState);
-        if (!this.options.noInitialState) this.determineState();
+        this.determineState();
       },
       onInputChange: function onInputChange() {
         var value = this.ui.input.val();
