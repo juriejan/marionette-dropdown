@@ -97,6 +97,10 @@
         this.listenTo(this.list, 'render:collection', this.onListCollectionRender);
         // Render the list before showing
         this.list.render();
+        // Set the list width if specified
+        if (this.options.listHeight) {
+          this.list.$el.css('height', this.options.listHeight);
+        }
         // Make list invisible
         animation.visible(this.list.$el, false);
         // Reset the list width
@@ -136,7 +140,8 @@
         var elHeight = this.$el.outerHeight();
         var elWidth = this.$el.outerWidth();
         var listWidth = this.list.$el.outerWidth();
-        var listHeight = this.list.$el.outerHeight();
+        var listHeight = 500;
+        // let listHeight = this.list.$el.outerHeight()
         var potentialTop = elOffset.top - listHeight;
         var potentialBottom = elOffset.top + elHeight + listHeight;
         var potentialRight = elOffset.left + listWidth;

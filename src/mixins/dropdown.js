@@ -50,6 +50,10 @@ export default {
     this.listenTo(this.list, 'render:collection', this.onListCollectionRender)
     // Render the list before showing
     this.list.render()
+    // Set the list width if specified
+    if (this.options.listHeight) {
+      this.list.$el.css('height', this.options.listHeight)
+    }
     // Make list invisible
     animation.visible(this.list.$el, false)
     // Reset the list width
@@ -89,7 +93,8 @@ export default {
     let elHeight = this.$el.outerHeight()
     let elWidth = this.$el.outerWidth()
     let listWidth = this.list.$el.outerWidth()
-    let listHeight = this.list.$el.outerHeight()
+    let listHeight = 500
+    // let listHeight = this.list.$el.outerHeight()
     let potentialTop = elOffset.top - listHeight
     let potentialBottom = elOffset.top + elHeight + listHeight
     let potentialRight = elOffset.left + listWidth
