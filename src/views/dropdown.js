@@ -46,7 +46,7 @@ export default Marionette.LayoutView.extend({
       if (child) { child.$el.addClass('focus') }
     }
   },
-  onBeforeShow: function () {
+  onAttach: function () {
     this.listenTo(this.collection, 'reset', this.determineState)
     this.determineState()
   },

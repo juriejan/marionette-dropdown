@@ -340,7 +340,7 @@
           }
         }
       },
-      onBeforeShow: function onBeforeShow() {
+      onAttach: function onAttach() {
         this.listenTo(this.collection, 'reset', this.determineState);
         this.determineState();
       },
