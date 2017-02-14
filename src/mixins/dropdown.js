@@ -4,6 +4,8 @@ import _ from 'lodash'
 
 import animation from 'animation'
 
+import utils from '../utils'
+
 export default {
   events: {
     keydown: 'onKeyDown'
@@ -48,6 +50,7 @@ export default {
     })
     // Attach to list events
     this.listenTo(this.list, 'render:collection', this.onListCollectionRender)
+    utils.transferAll(this.list, this, 'list')
     // Render the list before showing
     this.list.render()
     // Set the list width if specified

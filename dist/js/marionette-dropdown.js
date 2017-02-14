@@ -49,6 +49,82 @@
       }
     });
 
+    var templates = {
+        'dropdown': handlebars.template({ "1": function _(container, depth0, helpers, partials, data) {
+                var helper;
+
+                return " name=\"" + container.escapeExpression((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helpers.helperMissing, typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {}, { "name": "name", "hash": {}, "data": data }) : helper)) + "\"";
+            }, "compiler": [7, ">= 4.0.0"], "main": function main(container, depth0, helpers, partials, data) {
+                var stack1;
+
+                return "<div class=\"dropdown-button\">\n  <div class=\"button-text\"></div>\n  <i class=\"icons expand\">expand_more</i>\n</div>\n<input type=\"hidden\"" + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {}, depth0 != null ? depth0.name : depth0, { "name": "if", "hash": {}, "fn": container.program(1, data, 0), "inverse": container.noop, "data": data })) != null ? stack1 : "") + " />\n";
+            }, "useData": true }),
+        'spinner': handlebars.template({ "compiler": [7, ">= 4.0.0"], "main": function main(container, depth0, helpers, partials, data) {
+                return "<svg class=\"spinner\" width=\"65px\" height=\"65px\" viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\">\n  <circle class=\"spinner-path\" fill=\"none\" stroke-width=\"6\" stroke-linecap=\"round\" cx=\"33\" cy=\"33\" r=\"30\"></circle>\n</svg>\n";
+            }, "useData": true })
+    };
+
+    var spinnerHtml = templates['spinner']({});
+
+    function add(el) {
+      var loadingEl = $('<div class="loading"></div>');
+      loadingEl.append(spinnerHtml);
+      el.append(loadingEl);
+    }
+
+    function remove(el) {
+      el.children('.loading').remove();
+    }
+
+    function loading(el, on) {
+      if (on) {
+        add(el);
+      } else {
+        remove(el);
+      }
+    }
+
+    function defined() {
+      return _.find(arguments, function (o) {
+        return o !== undefined;
+      });
+    }
+
+    function transfer(sender, receiver, eventName) {
+      sender.listenTo(sender, eventName, function () {
+        var args = _([eventName]).concat(arguments).value();
+        receiver.trigger.apply(receiver, args);
+      });
+    }
+
+    function transferAll(sender, receiver, originName) {
+      sender.listenTo(sender, 'all', function (eventName) {
+        var args = _([originName + ':' + eventName]).concat(arguments).value();
+        receiver.trigger.apply(receiver, args);
+      });
+    }
+
+    function loadingEvents(receiver, sender) {
+      transfer(sender, receiver, 'loading');
+      transfer(sender, receiver, 'loaded');
+    }
+
+    function loadingActions(view) {
+      view.listenTo(view, 'loading', function () {
+        loading(view.$el, true);
+      });
+      view.listenTo(view, 'loaded', function () {
+        loading(view.$el, false);
+      });
+    }
+
+    var utils = {
+      defined: defined,
+      loadingActions: loadingActions,
+      loadingEvents: loadingEvents,
+      transferAll: transferAll
+    };
+
     var DropdownMixin = {
       events: {
         keydown: 'onKeyDown'
@@ -95,6 +171,7 @@
         });
         // Attach to list events
         this.listenTo(this.list, 'render:collection', this.onListCollectionRender);
+        utils.transferAll(this.list, this, 'list');
         // Render the list before showing
         this.list.render();
         // Set the list width if specified
@@ -233,74 +310,6 @@
           return Promise.resolve();
         }
       }
-    };
-
-    var templates = {
-        'dropdown': handlebars.template({ "1": function _(container, depth0, helpers, partials, data) {
-                var helper;
-
-                return " name=\"" + container.escapeExpression((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helpers.helperMissing, typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {}, { "name": "name", "hash": {}, "data": data }) : helper)) + "\"";
-            }, "compiler": [7, ">= 4.0.0"], "main": function main(container, depth0, helpers, partials, data) {
-                var stack1;
-
-                return "<div class=\"dropdown-button\">\n  <div class=\"button-text\"></div>\n  <i class=\"icons expand\">expand_more</i>\n</div>\n<input type=\"hidden\"" + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : {}, depth0 != null ? depth0.name : depth0, { "name": "if", "hash": {}, "fn": container.program(1, data, 0), "inverse": container.noop, "data": data })) != null ? stack1 : "") + " />\n";
-            }, "useData": true }),
-        'spinner': handlebars.template({ "compiler": [7, ">= 4.0.0"], "main": function main(container, depth0, helpers, partials, data) {
-                return "<svg class=\"spinner\" width=\"65px\" height=\"65px\" viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\">\n  <circle class=\"spinner-path\" fill=\"none\" stroke-width=\"6\" stroke-linecap=\"round\" cx=\"33\" cy=\"33\" r=\"30\"></circle>\n</svg>\n";
-            }, "useData": true })
-    };
-
-    var spinnerHtml = templates['spinner']({});
-
-    function add(el) {
-      var loadingEl = $('<div class="loading"></div>');
-      loadingEl.append(spinnerHtml);
-      el.append(loadingEl);
-    }
-
-    function remove(el) {
-      el.children('.loading').remove();
-    }
-
-    function loading(el, on) {
-      if (on) {
-        add(el);
-      } else {
-        remove(el);
-      }
-    }
-
-    function defined() {
-      return _.find(arguments, function (o) {
-        return o !== undefined;
-      });
-    }
-
-    function transfer(sender, receiver, eventName) {
-      sender.listenTo(sender, eventName, function () {
-        var args = _([eventName]).concat(arguments).value();
-        receiver.trigger.apply(receiver, args);
-      });
-    }
-
-    function loadingEvents(receiver, sender) {
-      transfer(sender, receiver, 'loading');
-      transfer(sender, receiver, 'loaded');
-    }
-
-    function loadingActions(view) {
-      view.listenTo(view, 'loading', function () {
-        loading(view.$el, true);
-      });
-      view.listenTo(view, 'loaded', function () {
-        loading(view.$el, false);
-      });
-    }
-
-    var utils = {
-      defined: defined,
-      loadingActions: loadingActions,
-      loadingEvents: loadingEvents
     };
 
     var DropdownFocusListView = focuslist.FocusListView.extend({
