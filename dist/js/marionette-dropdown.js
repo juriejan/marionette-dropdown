@@ -299,12 +299,12 @@
             // Detach the hide from the scroll
             _this2.scrollParent.off('scroll', _this2.onParentScrollFunc);
             _this2.scrollParent.off('scroll', _this2.hideListFunc);
-            // Trigger the hidden event
-            _this2.trigger('hidden');
             // Trigger freeze on parent if available
             if (_this2.parent) {
               _this2.parent.trigger('thaw');
             }
+            // Trigger the hidden event
+            return _this2.trigger('hidden');
           });
         } else {
           return Promise.resolve();

@@ -171,10 +171,10 @@ export default {
         // Detach the hide from the scroll
         this.scrollParent.off('scroll', this.onParentScrollFunc)
         this.scrollParent.off('scroll', this.hideListFunc)
-        // Trigger the hidden event
-        this.trigger('hidden')
         // Trigger freeze on parent if available
         if (this.parent) { this.parent.trigger('thaw') }
+        // Trigger the hidden event
+        return this.trigger('hidden')
       })
     } else {
       return Promise.resolve()
